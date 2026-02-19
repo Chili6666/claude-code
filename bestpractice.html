@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code — Best Practice Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface-2: #18181f;
+    --border: #2a2a35;
+    --accent: #c8f060;
+    --accent-dim: rgba(200,240,96,0.12);
+    --accent-glow: rgba(200,240,96,0.25);
+    --text: #e8e8f0;
+    --text-muted: #7878a0;
+    --text-dim: #4a4a65;
+    --gold: #f0c060;
+    --blue: #60a8f0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* ─── LANG SWITCHER ─── */
+  .lang-switcher {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    display: flex;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .lang-btn {
+    background: var(--surface);
+    color: var(--text-muted);
+    border: none;
+    padding: 0.4rem 0.85rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .lang-btn + .lang-btn {
+    border-left: 1px solid var(--border);
+  }
+
+  .lang-btn:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+
+  .lang-btn.active {
+    background: var(--accent);
+    color: #0a0a0f;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 4rem;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(200,240,96,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    left: 20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(96,168,240,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-tag::before {
+    content: '// ';
+    color: var(--text-dim);
+  }
+
+  .hero-author {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.3s;
+  }
+
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 1.05;
+    font-weight: 400;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-subtitle {
+    margin-top: 2.5rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    max-width: 540px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem;
+    left: 4rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1s;
+  }
+
+  .hero-scroll::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--text-muted);
+    animation: widthGrow 1s ease forwards 1.4s;
+  }
+
+  /* ─── ADVANTAGE BANNER ─── */
+  .advantage-banner {
+    background: var(--accent);
+    color: #0a0a0f;
+    padding: 2rem 4rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    position: relative;
+  }
+
+  .advantage-banner::before {
+    content: '★';
+    font-size: 1.2rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+  }
+
+  .advantage-banner p {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 900px;
+  }
+
+  .advantage-banner strong {
+    font-weight: 800;
+  }
+
+  /* ─── LAYOUT ─── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 4rem;
+  }
+
+  section {
+    padding: 7rem 4rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  /* ─── SECTION LABELS ─── */
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .section-label span {
+    color: var(--accent);
+    margin-right: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.15;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    max-width: 700px;
+  }
+
+  .section-lead {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.9;
+    max-width: 600px;
+    margin-bottom: 4rem;
+  }
+
+  /* ─── STEPS ─── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: 3rem;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 0;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+
+  .step:hover {
+    background: var(--surface);
+    margin: 0 -4rem;
+    padding: 2.5rem 4rem;
+  }
+
+  .step:hover .step-number {
+    color: var(--accent);
+  }
+
+  .step-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    padding-top: 0.2rem;
+    transition: color 0.3s ease;
+  }
+
+  .step-content h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+
+  .step-content p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.9;
+  }
+
+  .step-content .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .tag.accent {
+    border-color: rgba(200,240,96,0.4);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* ─── DOCS CARD GRID ─── */
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin-top: 3rem;
+    border: 1px solid var(--border);
+  }
+
+  .doc-card {
+    background: var(--surface);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease;
+  }
+
+  .doc-card:hover {
+    background: var(--surface-2);
+  }
+
+  .doc-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .doc-card:hover::before {
+    opacity: 1;
+  }
+
+  .doc-card-icon {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .doc-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .doc-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .doc-card ul li {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    line-height: 1.5;
+  }
+
+  .doc-card ul li::before {
+    content: '—';
+    color: var(--text-dim);
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+
+  /* ─── PHASE BLOCK ─── */
+  .phase-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+
+  .phase-block {
+    background: var(--surface);
+    padding: 2rem 2.5rem;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 2rem;
+    transition: background 0.3s ease;
+  }
+
+  .phase-block:hover {
+    background: var(--surface-2);
+  }
+
+  .phase-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 0.15rem;
+  }
+
+  .phase-body h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-body p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .phase-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.7rem;
+    border-radius: 2px;
+  }
+
+  .check::before {
+    content: '✓';
+    color: var(--accent);
+  }
+
+  /* ─── ARCHITECTURE ─── */
+  .arch-diagram {
+    margin-top: 3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .arch-diagram::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.015) 40px,
+      rgba(255,255,255,0.015) 41px
+    );
+    pointer-events: none;
+  }
+
+  .arch-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .arch-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .arch-node {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--text);
+    white-space: nowrap;
+    transition: border-color 0.3s ease;
+  }
+
+  .arch-node:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .arch-node.primary {
+    border-color: rgba(200,240,96,0.5);
+    color: var(--accent);
+  }
+
+  .arch-node.secondary {
+    border-color: rgba(96,168,240,0.4);
+    color: var(--blue);
+  }
+
+  .arch-arrow {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .arch-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .arch-divider-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--surface);
+    padding: 0 0.75rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* ─── KEY INSIGHT ─── */
+  .insight-box {
+    margin-top: 4rem;
+    background: var(--accent-dim);
+    border: 1px solid rgba(200,240,96,0.25);
+    padding: 2.5rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .insight-box::before {
+    content: '"';
+    position: absolute;
+    top: -1rem;
+    right: 2rem;
+    font-family: 'Instrument Serif', serif;
+    font-size: 10rem;
+    color: rgba(200,240,96,0.06);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .insight-box p {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--accent);
+    max-width: 700px;
+  }
+
+  .insight-box cite {
+    display: block;
+    margin-top: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-style: normal;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
+  footer span {
+    color: var(--accent);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes widthGrow {
+    from { width: 0; }
+    to { width: 40px; }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .hero, section, footer { padding-left: 2rem; padding-right: 2rem; }
+    .step:hover { margin: 0 -2rem; padding: 2.5rem 2rem; }
+    .phase-block { grid-template-columns: 1fr; }
+    .advantage-banner { padding: 2rem; }
+    .hero-scroll { left: 2rem; }
+    .docs-grid { grid-template-columns: 1fr; }
+    .lang-switcher { top: 1rem; right: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LANGUAGE SWITCHER -->
+<div class="lang-switcher">
+  <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-tag">Claude Code · Best Practice Guide</p>
+  <p class="hero-author"
+     data-de="von Volker Esser"
+     data-en="by Volker Esser">von Volker Esser</p>
+  <h1 class="hero-title">Build projects with<br><em>clarity &amp; structure</em></h1>
+  <p class="hero-subtitle"
+     data-de="Ein systematischer Ansatz um mit Claude Code Projekte aufzubauen — mit durchdachter Dokumentation, klaren Phasen und einer Architektur, die mit jedem Feature besser wird."
+     data-en="A systematic approach to building projects with Claude Code — with thoughtful documentation, clear phases, and an architecture that improves with every feature.">
+    Ein systematischer Ansatz um mit Claude Code Projekte aufzubauen — mit durchdachter Dokumentation, klaren Phasen und einer Architektur, die mit jedem Feature besser wird.
+  </p>
+  <div class="hero-scroll"
+       data-de="Scroll to explore"
+       data-en="Scroll to explore">Scroll to explore</div>
+</section>
+
+<!-- ADVANTAGE BANNER -->
+<div class="advantage-banner">
+  <p data-html-de="<strong>Schlüsselvorteil:</strong> Wenn du dein Projekt nach diesem Schema aufbaust, sind Erweiterungen in Zukunft erheblich einfacher umzusetzen — alles ist im <code>docs/</code>-Ordner dokumentiert. Claude muss bei jedem neuen Feature-Request <strong>nicht die gesamte Codebasis neu analysieren</strong>, sondern liest gezielt die vorhandene Dokumentation und kann sofort produktiv arbeiten."
+     data-html-en="<strong>Key advantage:</strong> When you build your project following this schema, future extensions are significantly easier to implement — everything is documented in the <code>docs/</code> folder. With every new feature request, Claude does <strong>not need to re-analyze the entire codebase</strong>, but instead reads the existing documentation and can start working productively right away.">
+    <strong>Schlüsselvorteil:</strong> Wenn du dein Projekt nach diesem Schema aufbaust, sind Erweiterungen in Zukunft erheblich einfacher umzusetzen — alles ist im <code>docs/</code>-Ordner dokumentiert. Claude muss bei jedem neuen Feature-Request <strong>nicht die gesamte Codebasis neu analysieren</strong>, sondern liest gezielt die vorhandene Dokumentation und kann sofort produktiv arbeiten.
+  </p>
+</div>
+
+<!-- STEP 1: DOCS FOLDER -->
+<section>
+  <p class="section-label"
+     data-html-de="<span>01</span>Fundament legen"
+     data-html-en="<span>01</span>Lay the Foundation"><span>01</span>Fundament legen</p>
+  <h2 class="section-title"
+      data-html-de="Starte mit dem<br><em>docs/</em> Ordner"
+      data-html-en="Start with the<br><em>docs/</em> folder">Starte mit dem<br><em>docs/</em> Ordner</h2>
+  <p class="section-lead"
+     data-de="Bevor eine einzige Zeile Code entsteht, wird das Fundament dokumentiert. Diese vier Dokumente sind der Single Source of Truth für Claude — und für dein Team."
+     data-en="Before a single line of code is written, the foundation is documented. These four documents are the single source of truth for Claude — and your team.">Bevor eine einzige Zeile Code entsteht, wird das Fundament dokumentiert. Diese vier Dokumente sind der Single Source of Truth für Claude — und für dein Team.</p>
+
+  <div class="docs-grid">
+    <div class="doc-card">
+      <span class="doc-card-icon">📋</span>
+      <h3>ProjectPlan</h3>
+      <ul>
+        <li>Project Overview</li>
+        <li>Purpose</li>
+        <li>Core Functionality</li>
+        <li>Technology Stack</li>
+        <li>Key Features</li>
+        <li>Related Documents</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <span class="doc-card-icon">🤖</span>
+      <h3>CLAUDE.md</h3>
+      <ul>
+        <li>Project Structure</li>
+        <li>Key Conventions (colors in global CSS, scoped CSS)</li>
+        <li>Known Issues &amp; Solutions</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <span class="doc-card-icon">🔌</span>
+      <h3>Tech Reference<br><small style="font-weight:300;font-size:0.7rem;text-transform:none;letter-spacing:0;"
+          data-de="(z.B. Zulip API)"
+          data-en="(e.g. Zulip API)">(z.B. Zulip API)</small></h3>
+      <ul>
+        <li data-de="Essentielle API-Datenstrukturen" data-en="Essential API Data Structures">Essentielle API-Datenstrukturen</li>
+        <li data-de="Mapping zu App-Interfaces" data-en="Mapping to App Interfaces">Mapping zu App-Interfaces</li>
+        <li data-de="Projektspezifische technische Details" data-en="Project-specific Technical Details">Projektspezifische technische Details</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <span class="doc-card-icon">🗺️</span>
+      <h3>Implementation Plan</h3>
+      <ul>
+        <li>Design Reference (Images)</li>
+        <li>Constraints</li>
+        <li>Project Structure</li>
+        <li>TypeScript Interfaces</li>
+        <li>CSS Variables Specification</li>
+        <li>Component Specifications</li>
+        <li>Implementation Phases</li>
+        <li>Task Checklist &amp; Verification Steps</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2: IMPLEMENTATION PLAN -->
+<section>
+  <p class="section-label"
+     data-html-de="<span>02</span>Phasen-Driven Development"
+     data-html-en="<span>02</span>Phase-Driven Development"><span>02</span>Phasen-Driven Development</p>
+  <h2 class="section-title"
+      data-html-de="Strukturierte<br><em>Implementierungsphasen</em>"
+      data-html-en="Structured<br><em>Implementation Phases</em>">Strukturierte<br><em>Implementierungsphasen</em></h2>
+  <p class="section-lead"
+     data-de="Jede Phase hat ein klares Ziel, definierte Abschlusskriterien und wird mit einer Zusammenfassung dokumentiert. Claude stoppt nach jeder Phase — kein unkontrollierter Vorlauf."
+     data-en="Each phase has a clear goal, defined completion criteria, and is documented with a summary. Claude stops after each phase — no uncontrolled runaway.">Jede Phase hat ein klares Ziel, definierte Abschlusskriterien und wird mit einer Zusammenfassung dokumentiert. Claude stoppt nach jeder Phase — kein unkontrollierter Vorlauf.</p>
+
+  <div class="phase-container">
+    <div class="phase-block">
+      <div class="phase-label"
+           data-de="Phase Start"
+           data-en="Phase Start">Phase Start</div>
+      <div class="phase-body">
+        <h4 data-de="Ziel der Phase definieren"
+            data-en="Define the Phase Goal">Ziel der Phase definieren</h4>
+        <p data-de="Jede Phase beginnt mit einem klaren, messbaren Ziel. Was wird implementiert? Welche Akzeptanzkriterien gelten?"
+           data-en="Each phase begins with a clear, measurable goal. What is being implemented? What acceptance criteria apply?">Jede Phase beginnt mit einem klaren, messbaren Ziel. Was wird implementiert? Welche Akzeptanzkriterien gelten?</p>
+      </div>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-label"
+           data-de="Implementierung"
+           data-en="Implementation">Implementierung</div>
+      <div class="phase-body">
+        <h4 data-de="Code schreiben &amp; iterieren"
+            data-en="Write Code &amp; Iterate">Code schreiben &amp; iterieren</h4>
+        <p data-de="Claude arbeitet gezielt im Scope der aktuellen Phase. Abweichungen werden dokumentiert, nicht stillschweigend implementiert."
+           data-en="Claude works precisely within the scope of the current phase. Deviations are documented, not silently implemented.">Claude arbeitet gezielt im Scope der aktuellen Phase. Abweichungen werden dokumentiert, nicht stillschweigend implementiert.</p>
+      </div>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-label"
+           data-de="Phase Ende"
+           data-en="Phase End">Phase Ende</div>
+      <div class="phase-body">
+        <h4 data-de="Abschlusskriterien erfüllen"
+            data-en="Meet Completion Criteria">Abschlusskriterien erfüllen</h4>
+        <div class="phase-checks">
+          <span class="check" data-de="Linter ausführen" data-en="Run Linter">Linter ausführen</span>
+          <span class="check" data-de="Build ausführen" data-en="Run Build">Build ausführen</span>
+          <span class="check" data-de="Tests ausführen" data-en="Run Tests">Tests ausführen</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-label"
+           data-de="Dokumentation"
+           data-en="Documentation">Dokumentation</div>
+      <div class="phase-body">
+        <h4 data-de="Phase-Summary erstellen &amp; Taskliste aktualisieren"
+            data-en="Create Phase Summary &amp; Update Task List">Phase-Summary erstellen &amp; Taskliste aktualisieren</h4>
+        <p data-html-de="Eine Zusammenfassung der Phase wird unter <code>docs/phases/</code> gespeichert. Die Taskliste im Implementation Plan wird aktualisiert."
+           data-html-en="A summary of the phase is saved under <code>docs/phases/</code>. The task list in the Implementation Plan is updated.">Eine Zusammenfassung der Phase wird unter <code>docs/phases/</code> gespeichert. Die Taskliste im Implementation Plan wird aktualisiert.</p>
+        <div class="tags" style="margin-top:1rem;">
+          <span class="tag accent">docs/phases/phase-01-summary.md</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-block" style="border-top: 2px solid rgba(200,240,96,0.3);">
+      <div class="phase-label" style="color: var(--gold);">⚠ Stopp</div>
+      <div class="phase-body">
+        <h4 data-de="Nicht mit der nächsten Phase beginnen"
+            data-en="Do Not Start the Next Phase">Nicht mit der nächsten Phase beginnen</h4>
+        <p data-de="Claude hält explizit inne. Die nächste Phase startet erst nach Bestätigung — das ermöglicht Kontrolle, Feedback und bewusste Iteration."
+           data-en="Claude explicitly pauses. The next phase only starts after confirmation — this enables control, feedback, and deliberate iteration.">Claude hält explizit inne. Die nächste Phase startet erst nach Bestätigung — das ermöglicht Kontrolle, Feedback und bewusste Iteration.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3: ARCHITECTURE -->
+<section>
+  <p class="section-label"
+     data-html-de="<span>03</span>Systemarchitektur"
+     data-html-en="<span>03</span>System Architecture"><span>03</span>Systemarchitektur</p>
+  <h2 class="section-title">Architecture Plan:<br><em>Dataflow &amp; Componentflow</em></h2>
+  <p class="section-lead"
+     data-de="Nach dem ProjectPlan folgt der Architecture Plan — er beschreibt wie Daten durch das System fließen und wie Komponenten miteinander interagieren."
+     data-en="After the ProjectPlan comes the Architecture Plan — it describes how data flows through the system and how components interact with each other.">Nach dem ProjectPlan folgt der Architecture Plan — er beschreibt wie Daten durch das System fließen und wie Komponenten miteinander interagieren.</p>
+
+  <div class="arch-diagram">
+    <div class="arch-divider-label">Dataflow</div>
+    <div style="height:1px;background:var(--border);margin-bottom:2rem;"></div>
+
+    <div class="arch-row">
+      <div class="arch-node primary">API / Zulip WebSocket</div>
+      <div class="arch-arrow">───▶</div>
+      <div class="arch-node">Data Layer / Store</div>
+      <div class="arch-arrow">───▶</div>
+      <div class="arch-node">Transformation / Mapping</div>
+      <div class="arch-arrow">───▶</div>
+      <div class="arch-node secondary">UI State</div>
+    </div>
+
+    <div class="arch-divider">
+      <span class="arch-divider-label">Componentflow</span>
+    </div>
+
+    <div class="arch-row">
+      <div class="arch-node primary">ChatView (Root)</div>
+      <div class="arch-arrow">─┬─▶</div>
+      <div class="arch-node">MessageList</div>
+      <div class="arch-arrow">───▶</div>
+      <div class="arch-node secondary">MessageItem</div>
+    </div>
+    <div class="arch-row" style="margin-top:-0.5rem;">
+      <div style="width:160px;flex-shrink:0;"></div>
+      <div class="arch-arrow">─┴─▶</div>
+      <div class="arch-node">InputBar</div>
+      <div class="arch-arrow">───▶</div>
+      <div class="arch-node secondary">SendAction</div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY INSIGHT -->
+<section>
+  <p class="section-label"
+     data-html-de="<span>★</span>Kernvorteil"
+     data-html-en="<span>★</span>Key Advantage"><span>★</span>Kernvorteil</p>
+
+  <div class="insight-box">
+    <p data-de="Der docs/-Ordner ist nicht nur Dokumentation — er ist das Gedächtnis des Projekts. Claude liest ihn, statt die Codebasis zu re-analysieren."
+       data-en="The docs/ folder is not just documentation — it is the project's memory. Claude reads it instead of re-analyzing the codebase.">Der docs/-Ordner ist nicht nur Dokumentation — er ist das Gedächtnis des Projekts. Claude liest ihn, statt die Codebasis zu re-analysieren.</p>
+    <cite>Best Practice Principle · Claude Code Workflow</cite>
+  </div>
+
+  <div class="steps-grid" style="margin-top:4rem;">
+    <div class="step">
+      <div class="step-number">01</div>
+      <div class="step-content">
+        <h3 data-de="Kein Re-Analyse-Overhead bei neuen Features"
+            data-en="No Re-Analysis Overhead for New Features">Kein Re-Analyse-Overhead bei neuen Features</h3>
+        <p data-html-de="Claude findet alle relevanten Informationen strukturiert im <code>docs/</code>-Ordner. Neues Feature? Kurzer Blick in <code>CLAUDE.md</code>, <code>IMPLEMENTATION_PLAN</code> und die aktuelle Phase-Summary — fertig."
+           data-html-en="Claude finds all relevant information structured in the <code>docs/</code> folder. New feature? A quick look at <code>CLAUDE.md</code>, <code>IMPLEMENTATION_PLAN</code>, and the current phase summary — done.">Claude findet alle relevanten Informationen strukturiert im <code>docs/</code>-Ordner. Neues Feature? Kurzer Blick in <code>CLAUDE.md</code>, <code>IMPLEMENTATION_PLAN</code> und die aktuelle Phase-Summary — fertig.</p>
+        <div class="tags">
+          <span class="tag accent" data-de="schnellere Iteration" data-en="faster iteration">schnellere Iteration</span>
+          <span class="tag" data-de="weniger Token-Verbrauch" data-en="less token usage">weniger Token-Verbrauch</span>
+          <span class="tag" data-de="konsistentere Outputs" data-en="more consistent outputs">konsistentere Outputs</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">02</div>
+      <div class="step-content">
+        <h3 data-de="Erweiterungen folgen einem klaren Schema"
+            data-en="Extensions Follow a Clear Schema">Erweiterungen folgen einem klaren Schema</h3>
+        <p data-de="Neue Entwickler und zukünftige Claude-Sessions verstehen das Projekt sofort — Conventions, bekannte Probleme und Architekturentscheidungen sind explizit dokumentiert."
+           data-en="New developers and future Claude sessions understand the project immediately — conventions, known issues, and architectural decisions are explicitly documented.">Neue Entwickler und zukünftige Claude-Sessions verstehen das Projekt sofort — Conventions, bekannte Probleme und Architekturentscheidungen sind explizit dokumentiert.</p>
+        <div class="tags">
+          <span class="tag accent" data-de="Onboarding in Minuten" data-en="Onboarding in minutes">Onboarding in Minuten</span>
+          <span class="tag" data-de="Architektur bleibt konsistent" data-en="Architecture stays consistent">Architektur bleibt konsistent</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">03</div>
+      <div class="step-content">
+        <h3 data-de="Phasen-Stops ermöglichen echte Kontrolle"
+            data-en="Phase Stops Enable Real Control">Phasen-Stops ermöglichen echte Kontrolle</h3>
+        <p data-de="Claude stoppt am Ende jeder Phase — du überprüfst, steuerst nach und gibst bewusst das Go für den nächsten Schritt. Kein unkontrollierter Vorlauf in eine falsche Richtung."
+           data-en="Claude stops at the end of each phase — you review, adjust, and consciously give the go-ahead for the next step. No uncontrolled runaway in the wrong direction.">Claude stoppt am Ende jeder Phase — du überprüfst, steuerst nach und gibst bewusst das Go für den nächsten Schritt. Kein unkontrollierter Vorlauf in eine falsche Richtung.</p>
+        <div class="tags">
+          <span class="tag accent" data-de="volle Kontrolle" data-en="full control">volle Kontrolle</span>
+          <span class="tag" data-de="frühzeitiges Feedback" data-en="early feedback">frühzeitiges Feedback</span>
+          <span class="tag" data-de="weniger Rework" data-en="less rework">weniger Rework</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Claude Code · Best Practice · ChatView Microfrontend</span>
+  <span>docs/ → <span>CLAUDE.md + ProjectPlan + TechRef + ImplementationPlan</span></span>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-de]').forEach(el => {
+      el.textContent = lang === 'de' ? el.dataset.de : el.dataset.en;
+    });
+
+    document.querySelectorAll('[data-html-de]').forEach(el => {
+      el.innerHTML = lang === 'de' ? el.dataset.htmlDe : el.dataset.htmlEn;
+    });
+  }
+</script>
+
+</body>
+</html>
