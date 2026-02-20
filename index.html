@@ -423,6 +423,31 @@
     margin-top: 0.05rem;
   }
 
+  .doc-card-ref {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--accent-dim);
+    border: 1px solid rgba(200,240,96,0.25);
+    border-radius: 2px;
+  }
+
+  .doc-card-ref code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .doc-card-ref span {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
   /* ─── PHASE BLOCK ─── */
   .phase-container {
     display: flex;
@@ -491,6 +516,16 @@
   .check::before {
     content: '✓';
     color: var(--accent);
+  }
+
+  .check.optional {
+    color: var(--text-dim);
+    border-color: rgba(74,74,101,0.5);
+  }
+
+  .check.optional::before {
+    content: '◦';
+    color: var(--text-dim);
   }
 
   /* ─── ARCHITECTURE ─── */
@@ -712,12 +747,12 @@
       <span class="doc-card-icon">📋</span>
       <h3>ProjectPlan</h3>
       <ul>
-        <li>Project Overview</li>
-        <li>Purpose</li>
-        <li>Core Functionality</li>
-        <li>Technology Stack</li>
-        <li>Key Features</li>
-        <li>Related Documents</li>
+        <li data-de="Projektüberblick" data-en="Project Overview">Projektüberblick</li>
+        <li data-de="Zweck" data-en="Purpose">Zweck</li>
+        <li data-de="Kernfunktionen" data-en="Core Functionality">Kernfunktionen</li>
+        <li data-de="Technologie-Stack" data-en="Technology Stack">Technologie-Stack</li>
+        <li data-de="Hauptmerkmale" data-en="Key Features">Hauptmerkmale</li>
+        <li data-de="Verwandte Dokumente" data-en="Related Documents">Verwandte Dokumente</li>
       </ul>
     </div>
 
@@ -725,10 +760,17 @@
       <span class="doc-card-icon">🤖</span>
       <h3>CLAUDE.md</h3>
       <ul>
-        <li>Project Structure</li>
-        <li>Key Conventions (colors in global CSS, scoped CSS)</li>
-        <li>Known Issues &amp; Solutions</li>
+        <li data-de="Projektstruktur" data-en="Project Structure">Projektstruktur</li>
+        <li data-de="Wichtige Konventionen (Farben in globalem CSS, Scoped CSS)" data-en="Key Conventions (colors in global CSS, scoped CSS)">Wichtige Konventionen (Farben in globalem CSS, Scoped CSS)</li>
+        <li data-de="Bekannte Probleme &amp; Lösungen" data-en="Known Issues &amp; Solutions">Bekannte Probleme &amp; Lösungen</li>
+        <li data-de="Bash-Befehle (Build, Lint, Dev-Server)" data-en="Bash Commands (build, lint, dev server)">Bash-Befehle (Build, Lint, Dev-Server)</li>
+        <li data-de="Explizite Verbote (was Claude nie tun soll)" data-en="Explicit Prohibitions (what Claude must never do)">Explizite Verbote (was Claude nie tun soll)</li>
+        <li data-de="Architekturentscheidungen &amp; Begründungen" data-en="Architecture Decisions &amp; Rationale">Architekturentscheidungen &amp; Begründungen</li>
       </ul>
+      <div class="doc-card-ref">
+        <code>@docs/</code>
+        <span data-de="lädt alle Docs automatisch als Kontext" data-en="auto-imports all docs as context">lädt alle Docs automatisch als Kontext</span>
+      </div>
     </div>
 
     <div class="doc-card">
@@ -747,14 +789,14 @@
       <span class="doc-card-icon">🗺️</span>
       <h3>Implementation Plan</h3>
       <ul>
-        <li>Design Reference (Images)</li>
-        <li>Constraints</li>
-        <li>Project Structure</li>
-        <li>TypeScript Interfaces</li>
-        <li>CSS Variables Specification</li>
-        <li>Component Specifications</li>
-        <li>Implementation Phases</li>
-        <li>Task Checklist &amp; Verification Steps</li>
+        <li data-de="Design-Referenz (Bilder)" data-en="Design Reference (Images)">Design-Referenz (Bilder)</li>
+        <li data-de="Einschränkungen" data-en="Constraints">Einschränkungen</li>
+        <li data-de="Projektstruktur" data-en="Project Structure">Projektstruktur</li>
+        <li data-de="TypeScript-Interfaces" data-en="TypeScript Interfaces">TypeScript-Interfaces</li>
+        <li data-de="CSS-Variablen-Spezifikation" data-en="CSS Variables Specification">CSS-Variablen-Spezifikation</li>
+        <li data-de="Komponenten-Spezifikationen" data-en="Component Specifications">Komponenten-Spezifikationen</li>
+        <li data-de="Implementierungsphasen" data-en="Implementation Phases">Implementierungsphasen</li>
+        <li data-de="Aufgaben-Checkliste &amp; Verifikationsschritte" data-en="Task Checklist &amp; Verification Steps">Aufgaben-Checkliste &amp; Verifikationsschritte</li>
       </ul>
     </div>
   </div>
@@ -782,6 +824,14 @@
             data-en="Define the Phase Goal">Ziel der Phase definieren</h4>
         <p data-de="Jede Phase beginnt mit einem klaren, messbaren Ziel. Was wird implementiert? Welche Akzeptanzkriterien gelten?"
            data-en="Each phase begins with a clear, measurable goal. What is being implemented? What acceptance criteria apply?">Jede Phase beginnt mit einem klaren, messbaren Ziel. Was wird implementiert? Welche Akzeptanzkriterien gelten?</p>
+        <div class="tags" style="margin-top:0.75rem;">
+          <span class="tag accent"
+                data-de="@file / @docs" data-en="@file / @docs">@file / @docs</span>
+          <span class="tag"
+                data-de="Bild / Design" data-en="Image / Design">Bild / Design</span>
+          <span class="tag"
+                data-de="Pipe-Daten" data-en="Pipe Data">Pipe-Daten</span>
+        </div>
       </div>
     </div>
 
@@ -805,9 +855,26 @@
         <h4 data-de="Abschlusskriterien erfüllen"
             data-en="Meet Completion Criteria">Abschlusskriterien erfüllen</h4>
         <div class="phase-checks">
-          <span class="check" data-de="Linter ausführen" data-en="Run Linter">Linter ausführen</span>
           <span class="check" data-de="Build ausführen" data-en="Run Build">Build ausführen</span>
-          <span class="check" data-de="Tests ausführen" data-en="Run Tests">Tests ausführen</span>
+          <span class="check" data-de="Linter ausführen" data-en="Run Linter">Linter ausführen</span>
+          <span class="check optional" data-de="Tests ausführen" data-en="Run Tests">Tests ausführen</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-label"
+           data-de="Entwickler-Freigabe"
+           data-en="Developer Sign-off">Entwickler-Freigabe</div>
+      <div class="phase-body">
+        <h4 data-de="Claude meldet: Phase abgeschlossen"
+            data-en="Claude reports: Phase complete">Claude meldet: Phase abgeschlossen</h4>
+        <p data-de="Claude informiert den Entwickler, sobald Build, Linter und alle definierten Kriterien erfüllt sind. Der Entwickler führt einen manuellen Abnahmetest durch — und committed die Phase mit <code>/commit</code>, das strukturierte Commit-Messages generiert."
+           data-en="Claude notifies the developer once build, linter, and all defined criteria pass. The developer performs a manual acceptance check — and commits the phase using <code>/commit</code>, which generates structured commit messages.">Claude informiert den Entwickler, sobald Build, Linter und alle definierten Kriterien erfüllt sind. Der Entwickler führt einen manuellen Abnahmetest durch — und committed die Phase mit <code>/commit</code>, das strukturierte Commit-Messages generiert.</p>
+        <div class="phase-checks">
+          <span class="check" data-de="Manuelle Kontrolle" data-en="Manual review">Manuelle Kontrolle</span>
+          <span class="check optional" data-de="Screenshot" data-en="Screenshot">Screenshot</span>
+          <span class="check" data-de="/commit ausführen" data-en="Run /commit">/commit ausführen</span>
         </div>
       </div>
     </div>
@@ -834,6 +901,22 @@
             data-en="Do Not Start the Next Phase">Nicht mit der nächsten Phase beginnen</h4>
         <p data-de="Claude hält explizit inne. Die nächste Phase startet erst nach Bestätigung — das ermöglicht Kontrolle, Feedback und bewusste Iteration."
            data-en="Claude explicitly pauses. The next phase only starts after confirmation — this enables control, feedback, and deliberate iteration.">Claude hält explizit inne. Die nächste Phase startet erst nach Bestätigung — das ermöglicht Kontrolle, Feedback und bewusste Iteration.</p>
+      </div>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-label"
+           data-de="Kontext Reset"
+           data-en="Context Reset">Kontext Reset</div>
+      <div class="phase-body">
+        <h4 data-de="Kontext leeren vor der nächsten Phase"
+            data-en="Clear Context Before the Next Phase">Kontext leeren vor der nächsten Phase</h4>
+        <p data-html-de="Das Kontextfenster akkumuliert über eine Phase hinweg viele Informationen. Vor dem Start der nächsten Phase sollte der Kontext mit <code>/clear</code> zurückgesetzt werden — so startet Claude ohne alten Ballast und mit vollem Fokus auf die neue Phase."
+           data-html-en="The context window accumulates a lot of information over a phase. Before starting the next phase, clear the context with <code>/clear</code> — this way Claude starts without old overhead and with full focus on the new phase.">Das Kontextfenster akkumuliert über eine Phase hinweg viele Informationen. Vor dem Start der nächsten Phase sollte der Kontext mit <code>/clear</code> zurückgesetzt werden — so startet Claude ohne alten Ballast und mit vollem Fokus auf die neue Phase.</p>
+        <div class="phase-checks">
+          <span class="check" data-de="/clear ausführen" data-en="Run /clear">/clear ausführen</span>
+          <span class="tag" data-de="Kontext ist jetzt leer" data-en="Context is now clean">Kontext ist jetzt leer</span>
+        </div>
       </div>
     </div>
   </div>
