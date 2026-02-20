@@ -597,6 +597,15 @@
     flex-shrink: 0;
   }
 
+  .arch-grid {
+    display: grid;
+    grid-template-columns: max-content max-content max-content max-content max-content;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
   .arch-divider {
     height: 1px;
     background: var(--border);
@@ -694,6 +703,68 @@
     .hero-scroll { left: 2rem; }
     .docs-grid { grid-template-columns: 1fr; }
     .lang-switcher { top: 1rem; right: 1rem; }
+  }
+
+  /* Advanced details block */
+  .advanced-details {
+    margin-top: 2rem;
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--gold);
+    background: rgba(240,192,96,0.04);
+  }
+  .advanced-details summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    user-select: none;
+  }
+  .advanced-details summary::-webkit-details-marker { display: none; }
+  .advanced-details summary::before {
+    content: '▶';
+    font-size: 0.55rem;
+    transition: transform 0.2s;
+  }
+  .advanced-details[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .advanced-details-body {
+    padding: 1.25rem 1.25rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 1.25rem;
+  }
+  .advanced-details pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.85rem 1rem;
+    font-size: 0.72rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    color: var(--text-muted);
+  }
+  .advanced-details pre strong {
+    color: var(--accent);
+  }
+  .advanced-details-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .advanced-details-benefits li::before {
+    content: '–  ';
+    color: var(--gold);
   }
 </style>
 </head>
@@ -800,6 +871,63 @@
       </ul>
     </div>
   </div>
+
+  <details class="advanced-details">
+    <summary
+      data-de="Advanced / Modulare Regeln — .claude/rules/*.md"
+      data-en="Advanced / Modular Rules — .claude/rules/*.md"
+      >Advanced / Modulare Regeln — .claude/rules/*.md</summary>
+    <div class="advanced-details-body">
+      <pre
+        data-html-de="<strong>.claude/</strong>
+  rules/
+    typescript.md   <span style='color:var(--text-dim)'>← globs: [&quot;**/*.ts&quot;]</span>
+    api.md          <span style='color:var(--text-dim)'>← globs: [&quot;src/api/**/*.ts&quot;]</span>
+    testing.md      <span style='color:var(--text-dim)'>← globs: [&quot;**/*.test.ts&quot;]</span>"
+        data-html-en="<strong>.claude/</strong>
+  rules/
+    typescript.md   <span style='color:var(--text-dim)'>← globs: [&quot;**/*.ts&quot;]</span>
+    api.md          <span style='color:var(--text-dim)'>← globs: [&quot;src/api/**/*.ts&quot;]</span>
+    testing.md      <span style='color:var(--text-dim)'>← globs: [&quot;**/*.test.ts&quot;]</span>"
+      ><strong>.claude/</strong>
+  rules/
+    typescript.md   <span style="color:var(--text-dim)">← globs: ["**/*.ts"]</span>
+    api.md          <span style="color:var(--text-dim)">← globs: ["src/api/**/*.ts"]</span>
+    testing.md      <span style="color:var(--text-dim)">← globs: ["**/*.test.ts"]</span></pre>
+
+      <pre
+        data-html-de="<span style='color:var(--text-dim)'>---
+globs: [&quot;src/api/**/*.ts&quot;]
+---</span>
+# API Conventions
+- Immer Zod für Input-Validierung
+- Keine direkten DB-Calls, nur Service-Layer"
+        data-html-en="<span style='color:var(--text-dim)'>---
+globs: [&quot;src/api/**/*.ts&quot;]
+---</span>
+# API Conventions
+- Always use Zod for input validation
+- No direct DB calls — service layer only"
+      ><span style="color:var(--text-dim)">---
+globs: ["src/api/**/*.ts"]
+---</span>
+# API Conventions
+- Immer Zod für Input-Validierung
+- Keine direkten DB-Calls, nur Service-Layer</pre>
+
+      <ul class="advanced-details-benefits">
+        <li data-de="Regeln laden nur wenn relevant → weniger Token-Verbrauch"
+            data-en="Rules load only when relevant → lower token usage"
+            >Regeln laden nur wenn relevant → weniger Token-Verbrauch</li>
+        <li data-de="Topic-spezifisch wartbar — API, Testing, UI getrennt"
+            data-en="Maintainable by topic — API, Testing, UI separated"
+            >Topic-spezifisch wartbar — API, Testing, UI getrennt</li>
+        <li data-de="Ergänzt den docs/-Ansatz ohne ihn zu ersetzen"
+            data-en="Complements the docs/ approach without replacing it"
+            >Ergänzt den docs/-Ansatz ohne ihn zu ersetzen</li>
+      </ul>
+    </div>
+  </details>
 </section>
 
 <!-- STEP 2: IMPLEMENTATION PLAN -->
@@ -854,6 +982,8 @@
       <div class="phase-body">
         <h4 data-de="Abschlusskriterien erfüllen"
             data-en="Meet Completion Criteria">Abschlusskriterien erfüllen</h4>
+        <p data-de="Claude führt diese Checks eigenständig aus — nicht als Checkliste für dich, sondern als automatische Verifikation. Schlägt Build oder Test fehl, analysiert Claude den Fehler, behebt die Ursache und führt die Prüfung erneut aus."
+           data-en="Claude runs these checks autonomously — not as a checklist for you, but as automatic verification. If a build or test fails, Claude analyzes the error, fixes the root cause, and re-runs the check.">Claude führt diese Checks eigenständig aus — nicht als Checkliste für dich, sondern als automatische Verifikation. Schlägt Build oder Test fehl, analysiert Claude den Fehler, behebt die Ursache und führt die Prüfung erneut aus.</p>
         <div class="phase-checks">
           <span class="check" data-de="Build ausführen" data-en="Run Build">Build ausführen</span>
           <span class="check" data-de="Linter ausführen" data-en="Run Linter">Linter ausführen</span>
@@ -933,8 +1063,9 @@
      data-en="After the ProjectPlan comes the Architecture Plan — it describes how data flows through the system and how components interact with each other.">Nach dem ProjectPlan folgt der Architecture Plan — er beschreibt wie Daten durch das System fließen und wie Komponenten miteinander interagieren.</p>
 
   <div class="arch-diagram">
-    <div class="arch-divider-label">Dataflow</div>
-    <div style="height:1px;background:var(--border);margin-bottom:2rem;"></div>
+    <div class="arch-divider" style="margin-bottom:2rem;">
+      <span class="arch-divider-label">Dataflow</span>
+    </div>
 
     <div class="arch-row">
       <div class="arch-node primary">API / Zulip WebSocket</div>
@@ -950,15 +1081,15 @@
       <span class="arch-divider-label">Componentflow</span>
     </div>
 
-    <div class="arch-row">
+    <div class="arch-grid">
+      <!-- Row 1 -->
       <div class="arch-node primary">ChatView (Root)</div>
       <div class="arch-arrow">─┬─▶</div>
       <div class="arch-node">MessageList</div>
       <div class="arch-arrow">───▶</div>
       <div class="arch-node secondary">MessageItem</div>
-    </div>
-    <div class="arch-row" style="margin-top:-0.5rem;">
-      <div style="width:160px;flex-shrink:0;"></div>
+      <!-- Row 2 -->
+      <div></div>
       <div class="arch-arrow">─┴─▶</div>
       <div class="arch-node">InputBar</div>
       <div class="arch-arrow">───▶</div>
