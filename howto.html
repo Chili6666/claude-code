@@ -253,6 +253,11 @@
     font-family: 'DM Mono', monospace;
     font-size: 0.75rem;
     color: var(--text-muted);
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .doc-viewer-body {
@@ -331,6 +336,35 @@
     margin-top: 0.05rem;
   }
 
+  /* Definition-style lists: term | description two-column grid */
+  .doc-viewer ul.def-list {
+    gap: 0.4rem;
+  }
+
+  .doc-viewer ul.def-list li {
+    display: grid;
+    grid-template-columns: var(--def-col, 10rem) 1fr;
+    gap: 0 1.25rem;
+    align-items: baseline;
+  }
+
+  .doc-viewer ul.def-list li::before {
+    display: none;
+  }
+
+  .doc-viewer ul.def-list li strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .doc-viewer ul.def-list li > code {
+    align-self: center;
+  }
+
+  .doc-viewer ul.def-list li span {
+    color: var(--text-muted);
+  }
+
   .doc-viewer pre {
     background: var(--bg);
     border: 1px solid var(--border);
@@ -391,6 +425,17 @@
 
   .doc-viewer td code {
     font-size: 0.72rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 1rem 0;
+  }
+
+  .table-wrap .doc-viewer table {
+    margin: 0;
+    min-width: 420px;
   }
 
   /* Status badges */
@@ -477,12 +522,19 @@
   }
 
   /* ─── WORKFLOW VISUALIZATION ─── */
-  .workflow-viz {
+  .workflow-viz-scroll {
     margin: 2.5rem 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .workflow-viz {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    min-width: max-content;
+    padding-bottom: 0.5rem;
   }
 
   .workflow-node {
@@ -632,7 +684,7 @@
     .hero, section, footer { padding-left: 2rem; padding-right: 2rem; }
     .top-nav { padding: 0 1.5rem; }
     .nav-links { gap: 1.25rem; }
-    .workflow-viz { flex-direction: column; align-items: flex-start; }
+    .workflow-viz-scroll { margin: 2rem 0; }
     .phase-step { grid-template-columns: 1fr; gap: 0.35rem; }
     .doc-viewer-body { padding: 1.25rem; }
   }
@@ -655,7 +707,9 @@
 <!-- HERO -->
 <section class="hero">
   <p class="hero-tag">Claude Code · How To</p>
-  <h1 class="hero-title">Vom Plan zum<br><em>laufenden Projekt</em></h1>
+  <h1 class="hero-title"
+      data-html-de="Vom Plan zum<br><em>laufenden Projekt</em>"
+      data-html-en="From Plan to<br><em>Running Project</em>">Vom Plan zum<br><em>laufenden Projekt</em></h1>
   <p class="hero-subtitle"
      data-de="Ein echter Workflow — von der ersten Idee über CLAUDE.md und Implementierungsplan bis zur letzten Phase. Gezeigt anhand eines echten React-MFE-Projekts."
      data-en="A real-world workflow — from first idea through CLAUDE.md and implementation plan to the final phase. Shown using an actual React MFE project.">
@@ -727,7 +781,7 @@ to docs/PROJECT_PLAN.md.</pre>
       </ul>
 
       <h2>Technology Stack</h2>
-      <table>
+      <div class="table-wrap"><table>
         <tr>
           <th>Technology</th><th>Purpose</th>
         </tr>
@@ -743,23 +797,23 @@ to docs/PROJECT_PLAN.md.</pre>
         <tr>
           <td><strong>Zulip</strong></td><td>Backend messaging system (planned integration)</td>
         </tr>
-      </table>
+      </table></div>
 
       <h2>Key Features</h2>
-      <ul>
-        <li><strong>Real-time messaging</strong> — Send and receive messages instantly</li>
-        <li><strong>Typing indicators</strong> — See when others are typing</li>
-        <li><strong>Online status</strong> — Visual indicators for user availability</li>
-        <li><strong>Resizable panels</strong> — Draggable vertical splitter between panels</li>
-        <li><strong>Unread badges</strong> — Know which conversations need attention</li>
+      <ul class="def-list">
+        <li><strong>Real-time messaging</strong><span>Send and receive messages instantly</span></li>
+        <li><strong>Typing indicators</strong><span>See when others are typing</span></li>
+        <li><strong>Online status</strong><span>Visual indicators for user availability</span></li>
+        <li><strong>Resizable panels</strong><span>Draggable vertical splitter between panels</span></li>
+        <li><strong>Unread badges</strong><span>Know which conversations need attention</span></li>
       </ul>
 
       <details class="doc-details">
         <summary data-de="Related Documents" data-en="Related Documents">Related Documents</summary>
         <div class="doc-details-body">
-          <ul>
-            <li><code>docs/IMPLEMENTATION_PLAN.md</code> — Technical details, phases, and specifications</li>
-            <li><code>docs/zulip-api-reference.md</code> — Backend API documentation for future integration</li>
+          <ul class="def-list">
+            <li><code>docs/IMPLEMENTATION_PLAN.md</code><span>Technical details, phases, and specifications</span></li>
+            <li><code>docs/zulip-api-reference.md</code><span>Backend API documentation for future integration</span></li>
           </ul>
         </div>
       </details>
@@ -869,6 +923,7 @@ docs/                  # PROJECT_PLAN.md, IMPLEMENTATION_PLAN.md, plans/</pre>
      data-en="The implementation plan is the most detailed document in the project. It defines constraints, interfaces, CSS variables, component specifications, and phases — everything Claude needs to implement consistently and correctly.">Der Implementierungsplan ist das detaillierteste Dokument im Projekt. Er definiert Constraints, Interfaces, CSS-Variablen, Komponentenspezifikationen und Phasen — alles was Claude braucht, um konsistent und korrekt zu implementieren.</p>
 
   <!-- WORKFLOW VISUALIZATION -->
+  <div class="workflow-viz-scroll">
   <div class="workflow-viz">
     <div class="workflow-node">
       <span class="node-num">①</span>
@@ -884,6 +939,7 @@ docs/                  # PROJECT_PLAN.md, IMPLEMENTATION_PLAN.md, plans/</pre>
       <span>🗺️</span>
       <span>IMPLEMENTATION_PLAN.md</span>
     </div>
+  </div>
   </div>
 
   <!-- PROMPT BLOCK -->
@@ -910,7 +966,7 @@ Save to docs/IMPLEMENTATION_PLAN.md.</pre>
       <h1>Implementation Plan: ChatView Demo MFE</h1>
 
       <h2>Constraints</h2>
-      <table>
+      <div class="table-wrap"><table>
         <tr>
           <th>Constraint</th><th>Details</th>
         </tr>
@@ -926,7 +982,7 @@ Save to docs/IMPLEMENTATION_PLAN.md.</pre>
         <tr>
           <td><strong>Module Federation</strong></td><td>Must expose <code>./bootstrap</code> for MFE host integration</td>
         </tr>
-      </table>
+      </table></div>
 
       <h2>TypeScript Interfaces</h2>
       <pre>interface User {
@@ -955,7 +1011,7 @@ interface Chat {
 }</pre>
 
       <h2>Implementation Phases</h2>
-      <table>
+      <div class="table-wrap"><table>
         <tr>
           <th>Phase</th><th>Name</th><th>Scope</th><th>Status</th>
         </tr>
@@ -995,7 +1051,7 @@ interface Chat {
           <td>Animations, keyboard nav, ARIA, loading/empty states</td>
           <td><span class="badge-done">✓ done</span></td>
         </tr>
-      </table>
+      </table></div>
     </div>
   </div>
 </section>
@@ -1083,15 +1139,15 @@ interface Chat {
       <p>Implement the foundation layer — TypeScript interfaces, mock service, and the custom hook that provides service access to all components.</p>
 
       <h2>Current State</h2>
-      <ul>
-        <li><code>src/assets/css/globals.css</code> — Already exists with all CSS variables</li>
-        <li><code>src/interfaces/</code> — Directory exists, missing chat-related interfaces</li>
-        <li><code>src/services/</code> — Does NOT exist yet</li>
-        <li><code>src/hooks/</code> — Does NOT exist yet</li>
+      <ul class="def-list">
+        <li><code>src/assets/css/globals.css</code><span>Already exists with all CSS variables</span></li>
+        <li><code>src/interfaces/</code><span>Directory exists, missing chat-related interfaces</span></li>
+        <li><code>src/services/</code><span>Does NOT exist yet</span></li>
+        <li><code>src/hooks/</code><span>Does NOT exist yet</span></li>
       </ul>
 
       <h2>Tasks</h2>
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>File</th><th>Action</th><th>Status</th></tr>
         <tr>
           <td><code>src/interfaces/User.ts</code></td>
@@ -1123,7 +1179,7 @@ interface Chat {
           <td>Create singleton hook</td>
           <td><span class="badge-done">✓ done</span></td>
         </tr>
-      </table>
+      </table></div>
 
       <h2>Verification</h2>
       <pre>npx eslint src/    # No errors
@@ -1149,7 +1205,7 @@ npm run build      # Build successful
       <p>Production-quality polish: animated typing indicators, professional loading/empty states, full keyboard navigation, and comprehensive WCAG 2.1 Level AA accessibility.</p>
 
       <h2>New Components</h2>
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Component</th><th>Description</th><th>Status</th></tr>
         <tr>
           <td><code>InlineSpinner</code></td>
@@ -1166,39 +1222,39 @@ npm run build      # Build successful
           <td>Bouncing dots + dynamic user names — ARIA live region</td>
           <td><span class="badge-done">✓ done</span></td>
         </tr>
-      </table>
+      </table></div>
 
       <h2>Keyboard Navigation (ChatList)</h2>
-      <ul>
-        <li><strong>Arrow Down/Up</strong> — Move between chats</li>
-        <li><strong>Home / End</strong> — Jump to first/last chat</li>
-        <li><strong>Enter / Space</strong> — Select focused chat</li>
-        <li><strong>Escape</strong> — Clear search input</li>
+      <ul class="def-list">
+        <li><strong>Arrow Down/Up</strong><span>Move between chats</span></li>
+        <li><strong>Home / End</strong><span>Jump to first/last chat</span></li>
+        <li><strong>Enter / Space</strong><span>Select focused chat</span></li>
+        <li><strong>Escape</strong><span>Clear search input</span></li>
       </ul>
 
       <h2>Accessibility (WCAG 2.1 AA)</h2>
-      <ul>
-        <li>ChatList: <code>role="listbox"</code>, <code>aria-activedescendant</code>, <code>aria-label</code></li>
-        <li>ChatListItem: <code>role="option"</code>, <code>aria-selected</code></li>
-        <li>TypingIndicator: <code>role="status"</code>, <code>aria-live="polite"</code></li>
+      <ul class="def-list">
+        <li><strong>ChatList</strong><span><code>role="listbox"</code>, <code>aria-activedescendant</code>, <code>aria-label</code></span></li>
+        <li><strong>ChatListItem</strong><span><code>role="option"</code>, <code>aria-selected</code></span></li>
+        <li><strong>TypingIndicator</strong><span><code>role="status"</code>, <code>aria-live="polite"</code></span></li>
       </ul>
 
       <details class="doc-details">
         <summary data-de="Modified Files (8 components)" data-en="Modified Files (8 components)">Modified Files (8 components)</summary>
         <div class="doc-details-body">
-          <ul>
-            <li><code>src/views/HomePage/HomePage.tsx</code> — InlineSpinner for chat list loading</li>
-            <li><code>src/components/ChatList/ChatList.tsx</code> — Keyboard nav + ARIA</li>
-            <li><code>src/components/ChatContent/ChatContent.tsx</code> — InlineSpinner, EmptyState, TypingIndicator</li>
-            <li><code>src/components/ChatListItem/ChatListItem.tsx</code> — role="option", aria-selected</li>
-            <li><code>src/components/SearchInput/SearchInput.tsx</code> — Escape key clear</li>
-            <li><code>src/assets/css/globals.css</code> — New CSS variables added</li>
+          <ul class="def-list" style="--def-col: 18rem;">
+            <li><code>src/views/HomePage/HomePage.tsx</code><span>InlineSpinner for chat list loading</span></li>
+            <li><code>src/components/ChatList/ChatList.tsx</code><span>Keyboard nav + ARIA</span></li>
+            <li><code>src/components/ChatContent/ChatContent.tsx</code><span>InlineSpinner, EmptyState, TypingIndicator</span></li>
+            <li><code>src/components/ChatListItem/ChatListItem.tsx</code><span>role="option", aria-selected</span></li>
+            <li><code>src/components/SearchInput/SearchInput.tsx</code><span>Escape key clear</span></li>
+            <li><code>src/assets/css/globals.css</code><span>New CSS variables added</span></li>
           </ul>
         </div>
       </details>
 
       <h2>Testing Results</h2>
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Check</th><th>Result</th></tr>
         <tr>
           <td><code>npx eslint src/</code></td>
@@ -1212,7 +1268,7 @@ npm run build      # Build successful
           <td><code>npm run build</code></td>
           <td><span class="badge-done">✓ build successful</span></td>
         </tr>
-      </table>
+      </table></div>
     </div>
   </div>
 
