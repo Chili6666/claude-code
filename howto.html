@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code — How To</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface-2: #18181f;
+    --border: #2a2a35;
+    --accent: #c8f060;
+    --accent-dim: rgba(200,240,96,0.12);
+    --accent-glow: rgba(200,240,96,0.25);
+    --text: #e8e8f0;
+    --text-muted: #7878a0;
+    --text-dim: #4a4a65;
+    --gold: #f0c060;
+    --blue: #60a8f0;
+    --green: #60d090;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+    padding-top: 3rem;
+  }
+
+  /* ─── NOISE TEXTURE ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* ─── TOP NAV ─── */
+  .top-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9999;
+    height: 3rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+  }
+
+  .nav-link:hover { color: var(--text); }
+  .nav-link.active { color: var(--accent); }
+
+  .nav-lang {
+    display: flex;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .lang-btn {
+    background: var(--surface);
+    color: var(--text-muted);
+    border: none;
+    padding: 0.4rem 0.85rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .lang-btn + .lang-btn { border-left: 1px solid var(--border); }
+  .lang-btn:hover { color: var(--text); background: var(--surface-2); }
+  .lang-btn.active { background: var(--accent); color: #0a0a0f; }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 4rem;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%; right: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(200,240,96,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-tag::before { content: '// '; color: var(--text-dim); }
+
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    font-weight: 400;
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-title em { font-style: italic; color: var(--accent); }
+
+  .hero-subtitle {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 540px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  /* ─── LAYOUT ─── */
+  section {
+    padding: 7rem 4rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  /* ─── SECTION LABELS ─── */
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .section-label span { color: var(--accent); margin-right: 0.5rem; }
+
+  .section-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.15;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    max-width: 700px;
+  }
+
+  .section-lead {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.9;
+    max-width: 600px;
+    margin-bottom: 3rem;
+  }
+
+  /* ─── PROMPT BLOCK ─── */
+  .prompt-block {
+    margin: 2rem 0;
+    border: 1px solid rgba(200,240,96,0.3);
+    border-left: 3px solid var(--accent);
+    background: rgba(200,240,96,0.04);
+    position: relative;
+  }
+
+  .prompt-block-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1.25rem;
+    border-bottom: 1px solid rgba(200,240,96,0.15);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+  }
+
+  .prompt-block pre {
+    padding: 1.25rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* ─── DOC VIEWER ─── */
+  .doc-viewer {
+    margin: 2rem 0;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .doc-viewer-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+
+  .doc-viewer-header code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .doc-viewer-body {
+    padding: 1.75rem 2rem;
+  }
+
+  .doc-viewer h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .doc-viewer h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .doc-viewer h2::before {
+    content: '##';
+    color: var(--text-dim);
+    font-weight: 300;
+    font-size: 0.7rem;
+  }
+
+  .doc-viewer h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .doc-viewer p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.85;
+    margin-bottom: 0.75rem;
+  }
+
+  .doc-viewer ul {
+    list-style: none;
+    margin: 0.5rem 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .doc-viewer ul li {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    line-height: 1.6;
+  }
+
+  .doc-viewer ul li::before {
+    content: '—';
+    color: var(--text-dim);
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+
+  .doc-viewer pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 1rem 1.25rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    overflow-x: auto;
+    margin: 0.75rem 0;
+  }
+
+  .doc-viewer code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8em;
+    color: var(--blue);
+    background: rgba(96,168,240,0.08);
+    padding: 0.1em 0.4em;
+    border-radius: 2px;
+  }
+
+  .doc-viewer pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  .doc-viewer table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    margin: 1rem 0;
+  }
+
+  .doc-viewer th {
+    background: var(--surface);
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 0.5rem 0.85rem;
+    text-align: left;
+    border: 1px solid var(--border);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+  }
+
+  .doc-viewer td {
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .doc-viewer td strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .doc-viewer td code {
+    font-size: 0.72rem;
+  }
+
+  /* Status badges */
+  .badge-done {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    color: var(--accent);
+    border: 1px solid rgba(200,240,96,0.3);
+    padding: 0.1rem 0.55rem;
+    border-radius: 2px;
+    background: rgba(200,240,96,0.06);
+    white-space: nowrap;
+  }
+
+  .badge-wip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    color: var(--gold);
+    border: 1px solid rgba(240,192,96,0.3);
+    padding: 0.1rem 0.55rem;
+    border-radius: 2px;
+    background: rgba(240,192,96,0.06);
+    white-space: nowrap;
+  }
+
+  .badge-todo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.55rem;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .badge-check {
+    color: var(--accent);
+    font-size: 0.85rem;
+  }
+
+  .badge-open {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+
+  /* Collapsible doc sections */
+  .doc-details {
+    border-top: 1px solid var(--border);
+    margin-top: 1.25rem;
+  }
+
+  .doc-details summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.75rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    user-select: none;
+  }
+
+  .doc-details summary::-webkit-details-marker { display: none; }
+
+  .doc-details summary::before {
+    content: '▶';
+    font-size: 0.5rem;
+    transition: transform 0.2s;
+  }
+
+  .doc-details[open] summary::before { transform: rotate(90deg); }
+
+  .doc-details-body {
+    padding-bottom: 1rem;
+  }
+
+  /* ─── WORKFLOW VISUALIZATION ─── */
+  .workflow-viz {
+    margin: 2.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .workflow-node {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.78rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: border-color 0.2s;
+  }
+
+  .workflow-node .node-num {
+    font-size: 1.4rem;
+    color: var(--accent);
+    opacity: 0.7;
+    line-height: 1;
+  }
+
+  .workflow-node.primary {
+    border-color: rgba(200,240,96,0.4);
+    color: var(--accent);
+  }
+
+  .workflow-arrow {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* ─── PHASE LOOP DIAGRAM ─── */
+  .phase-loop {
+    margin: 2.5rem 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .phase-step {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1.5rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+
+  .phase-step:last-child { border-bottom: none; }
+
+  .phase-step-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 0.1rem;
+  }
+
+  .phase-step-label.stop { color: var(--gold); }
+
+  .phase-step-body {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .phase-step-body strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ─── TAGS ─── */
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .tag.accent {
+    border-color: rgba(200,240,96,0.4);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* ─── INSIGHT BOX ─── */
+  .insight-box {
+    margin-top: 3rem;
+    background: var(--accent-dim);
+    border: 1px solid rgba(200,240,96,0.25);
+    padding: 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .insight-box::before {
+    content: '"';
+    position: absolute;
+    top: -1rem; right: 2rem;
+    font-family: 'Instrument Serif', serif;
+    font-size: 8rem;
+    color: rgba(200,240,96,0.06);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .insight-box p {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--accent);
+    max-width: 680px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
+  footer span { color: var(--accent); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .hero, section, footer { padding-left: 2rem; padding-right: 2rem; }
+    .top-nav { padding: 0 1.5rem; }
+    .nav-links { gap: 1.25rem; }
+    .workflow-viz { flex-direction: column; align-items: flex-start; }
+    .phase-step { grid-template-columns: 1fr; gap: 0.35rem; }
+    .doc-viewer-body { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Best Practice Guide</a>
+    <a href="howto.html" class="nav-link active">How To</a>
+  </div>
+  <div class="nav-lang">
+    <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-tag">Claude Code · How To</p>
+  <h1 class="hero-title">Vom Plan zum<br><em>laufenden Projekt</em></h1>
+  <p class="hero-subtitle"
+     data-de="Ein echter Workflow — von der ersten Idee über CLAUDE.md und Implementierungsplan bis zur letzten Phase. Gezeigt anhand eines echten React-MFE-Projekts."
+     data-en="A real-world workflow — from first idea through CLAUDE.md and implementation plan to the final phase. Shown using an actual React MFE project.">
+    Ein echter Workflow — von der ersten Idee über CLAUDE.md und Implementierungsplan bis zur letzten Phase. Gezeigt anhand eines echten React-MFE-Projekts.
+  </p>
+</section>
+
+<!-- ──────────────────────────────────────────── -->
+<!-- SECTION 01 — PROJEKTPLAN                    -->
+<!-- ──────────────────────────────────────────── -->
+<section>
+  <p class="section-label"
+     data-html-de="<span>01</span>Projektplan erstellen"
+     data-html-en="<span>01</span>Create a Project Plan"><span>01</span>Projektplan erstellen</p>
+  <h2 class="section-title"
+      data-html-de="Claude <em>interviewt</em> dich"
+      data-html-en="Claude <em>interviews</em> you">Claude <em>interviewt</em> dich</h2>
+  <p class="section-lead"
+     data-de="Bevor Code entsteht, braucht es Klarheit. Statt einem langen Prompt beschreibst du dein Vorhaben in wenigen Sätzen — Claude übernimmt das Interview. Mit gezielten Fragen zu Stack, Features und Constraints entsteht ein vollständiger Projektplan."
+     data-en="Before any code, clarity is needed. Instead of writing a long prompt, you describe your idea in a few sentences — Claude takes over the interview. With targeted questions about stack, features, and constraints, a complete project plan takes shape.">Bevor Code entsteht, braucht es Klarheit. Statt einem langen Prompt beschreibst du dein Vorhaben in wenigen Sätzen — Claude übernimmt das Interview. Mit gezielten Fragen zu Stack, Features und Constraints entsteht ein vollständiger Projektplan.</p>
+
+  <!-- PROMPT BLOCK -->
+  <div class="prompt-block">
+    <div class="prompt-block-label">
+      <span>⌨</span>
+      <span data-de="Prompt — Interview-Ansatz" data-en="Prompt — Interview Approach">Prompt — Interview-Ansatz</span>
+    </div>
+    <pre>I want to build [short description]. Interview me using the AskUserQuestion tool.
+Ask about core functionality, technology stack, key features, and constraints.
+Keep interviewing until you have enough information, then write a PROJECT_PLAN.md
+to docs/PROJECT_PLAN.md.</pre>
+  </div>
+
+  <!-- DOC VIEWER: PROJECT_PLAN.md -->
+  <div class="doc-viewer">
+    <div class="doc-viewer-header">
+      <span>📋</span>
+      <code>docs/PROJECT_PLAN.md</code>
+      <span style="margin-left:auto;" class="badge-done">✓ completed</span>
+    </div>
+    <div class="doc-viewer-body">
+      <h1>ChatView Demo MFE</h1>
+
+      <h2>Project Overview</h2>
+      <p>ChatView Demo is a Microfrontend (MFE) that provides a chat interface similar to Microsoft Teams. It serves as a demonstration of chat functionality that can be integrated into larger applications.</p>
+
+      <h2>Purpose</h2>
+      <ul>
+        <li>Displays conversations in a familiar, modern chat layout</li>
+        <li>Supports both individual and group conversations</li>
+        <li>Provides a responsive, intuitive user experience</li>
+        <li>Can be integrated into other applications as a microfrontend</li>
+      </ul>
+
+      <h2>Core Functionality</h2>
+      <h3>Chat List (Left Panel)</h3>
+      <ul>
+        <li>Display all available conversations</li>
+        <li>Show conversation name, last message preview, and timestamp</li>
+        <li>Indicate unread message count with badges</li>
+        <li>Search/filter conversations</li>
+      </ul>
+      <h3>Chat Content (Right Panel)</h3>
+      <ul>
+        <li>Display messages for the selected conversation</li>
+        <li>Distinguish between own messages and messages from others</li>
+        <li>Show sender information and timestamps</li>
+        <li>Real-time typing indicator</li>
+      </ul>
+
+      <h2>Technology Stack</h2>
+      <table>
+        <tr>
+          <th>Technology</th><th>Purpose</th>
+        </tr>
+        <tr>
+          <td><strong>React</strong></td><td>UI framework for building components</td>
+        </tr>
+        <tr>
+          <td><strong>FusionKit</strong></td><td>Authentication and logging integration</td>
+        </tr>
+        <tr>
+          <td><strong>Microfrontend Architecture</strong></td><td>Modular integration via Module Federation</td>
+        </tr>
+        <tr>
+          <td><strong>Zulip</strong></td><td>Backend messaging system (planned integration)</td>
+        </tr>
+      </table>
+
+      <h2>Key Features</h2>
+      <ul>
+        <li><strong>Real-time messaging</strong> — Send and receive messages instantly</li>
+        <li><strong>Typing indicators</strong> — See when others are typing</li>
+        <li><strong>Online status</strong> — Visual indicators for user availability</li>
+        <li><strong>Resizable panels</strong> — Draggable vertical splitter between panels</li>
+        <li><strong>Unread badges</strong> — Know which conversations need attention</li>
+      </ul>
+
+      <details class="doc-details">
+        <summary data-de="Related Documents" data-en="Related Documents">Related Documents</summary>
+        <div class="doc-details-body">
+          <ul>
+            <li><code>docs/IMPLEMENTATION_PLAN.md</code> — Technical details, phases, and specifications</li>
+            <li><code>docs/zulip-api-reference.md</code> — Backend API documentation for future integration</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────── -->
+<!-- SECTION 02 — CLAUDE.MD                      -->
+<!-- ──────────────────────────────────────────── -->
+<section>
+  <p class="section-label"
+     data-html-de="<span>02</span>CLAUDE.md erstellen"
+     data-html-en="<span>02</span>Create CLAUDE.md"><span>02</span>CLAUDE.md erstellen</p>
+  <h2 class="section-title"
+      data-html-de="Das <em>Gedächtnis</em> der Session"
+      data-html-en="The <em>Memory</em> of the Session">Das <em>Gedächtnis</em> der Session</h2>
+  <p class="section-lead"
+     data-de="CLAUDE.md ist keine Dokumentation für Menschen — sie ist Kontext für Claude. Diese Datei wird bei jedem Session-Start automatisch geladen. Sie enthält was Claude wissen muss: Projektstruktur, Konventionen, bekannte Probleme, Bash-Befehle und explizite Verbote."
+     data-en="CLAUDE.md is not documentation for humans — it is context for Claude. This file is loaded automatically at the start of every session. It contains what Claude needs to know: project structure, conventions, known issues, bash commands, and explicit prohibitions.">CLAUDE.md ist keine Dokumentation für Menschen — sie ist Kontext für Claude. Diese Datei wird bei jedem Session-Start automatisch geladen. Sie enthält was Claude wissen muss: Projektstruktur, Konventionen, bekannte Probleme, Bash-Befehle und explizite Verbote.</p>
+
+  <!-- PROMPT BLOCK -->
+  <div class="prompt-block">
+    <div class="prompt-block-label">
+      <span>⌨</span>
+      <span data-de="Prompt — aus Projektplan ableiten" data-en="Prompt — derive from project plan">Prompt — aus Projektplan ableiten</span>
+    </div>
+    <pre>Based on @PROJECT_PLAN.md create a CLAUDE.md for this project.
+Include: project structure, key conventions, bash commands,
+explicit prohibitions (what Claude must never do),
+and architecture decisions with rationale.
+Keep it concise — every line must serve a purpose.</pre>
+  </div>
+
+  <!-- DOC VIEWER: CLAUDE.md -->
+  <div class="doc-viewer">
+    <div class="doc-viewer-header">
+      <span>🤖</span>
+      <code>CLAUDE.md</code>
+      <span style="margin-left:auto;" class="badge-done">✓ completed</span>
+    </div>
+    <div class="doc-viewer-body">
+      <h1>CLAUDE.md — vesser-chatview-demo</h1>
+
+      <h2>Project Overview</h2>
+      <p>React/TypeScript microfrontend (MFE) providing a Teams-like chat interface. Uses Module Federation via <code>@module-federation/vite</code> and integrates with FusionKit for auth/logging.</p>
+
+      <h2>Commands</h2>
+      <pre>npm start              # Dev server on port 4200
+npm run build          # TypeScript compile + Vite build
+npm run preview        # Preview production build
+npx tsc --noEmit       # Type check without emitting
+npx eslint src/        # Lint source files</pre>
+
+      <h2>Project Structure</h2>
+      <pre>src/
+  Bootstrap.tsx        # MFE entry point (Module Federation)
+  components/          # Reusable UI components
+  views/               # Page-level components
+  interfaces/          # TypeScript type definitions
+  services/            # MockChatService, BotServiceRegistry
+  hooks/               # useChatService
+  assets/css/          # globals.css — all CSS variables here
+docs/                  # PROJECT_PLAN.md, IMPLEMENTATION_PLAN.md, plans/</pre>
+
+      <h2>Key Conventions</h2>
+      <ul>
+        <li>CSS Modules for component styling (<code>*.module.css</code>)</li>
+        <li><strong>All colors MUST be defined in <code>src/assets/css/globals.css</code></strong></li>
+        <li>Views are page-level, components are reusable UI elements</li>
+        <li>MFE exposes <code>./bootstrap</code> via remoteEntry.js</li>
+      </ul>
+
+      <details class="doc-details">
+        <summary data-de="Known Issues &amp; Solutions" data-en="Known Issues &amp; Solutions">Known Issues &amp; Solutions</summary>
+        <div class="doc-details-body">
+          <h3>Page Flickering on Chat Selection</h3>
+          <p>Root Cause: <code>selectedChatId</code> in useEffect dependency array caused effect to re-run on every chat selection. Solution: Remove <code>selectedChatId</code> from dependencies.</p>
+          <h3>Avatar "?" Placeholder Flash</h3>
+          <p>Root Cause: React render batching caused messages from Chat A to render with Chat B's participant data. Solution: Add <code>message.chatId === chat.id</code> filter to message rendering.</p>
+        </div>
+      </details>
+
+      <details class="doc-details">
+        <summary data-de="Architecture Decisions" data-en="Architecture Decisions">Architecture Decisions</summary>
+        <div class="doc-details-body">
+          <h3>Bots as First-Class Users</h3>
+          <p>Bots have <code>isBot: true</code> in the User interface — not a separate Chat property. Any chat can have zero, one, or multiple bots as participants. Consistent with industry standards (Slack, Discord, Teams).</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────── -->
+<!-- SECTION 03 — IMPLEMENTIERUNGSPLAN           -->
+<!-- ──────────────────────────────────────────── -->
+<section>
+  <p class="section-label"
+     data-html-de="<span>03</span>Implementierungsplan ableiten"
+     data-html-en="<span>03</span>Derive the Implementation Plan"><span>03</span>Implementierungsplan ableiten</p>
+  <h2 class="section-title"
+      data-html-de="Das technische <em>Herzstück</em>"
+      data-html-en="The Technical <em>Core</em>">Das technische <em>Herzstück</em></h2>
+  <p class="section-lead"
+     data-de="Der Implementierungsplan ist das detaillierteste Dokument im Projekt. Er definiert Constraints, Interfaces, CSS-Variablen, Komponentenspezifikationen und Phasen — alles was Claude braucht, um konsistent und korrekt zu implementieren."
+     data-en="The implementation plan is the most detailed document in the project. It defines constraints, interfaces, CSS variables, component specifications, and phases — everything Claude needs to implement consistently and correctly.">Der Implementierungsplan ist das detaillierteste Dokument im Projekt. Er definiert Constraints, Interfaces, CSS-Variablen, Komponentenspezifikationen und Phasen — alles was Claude braucht, um konsistent und korrekt zu implementieren.</p>
+
+  <!-- WORKFLOW VISUALIZATION -->
+  <div class="workflow-viz">
+    <div class="workflow-node">
+      <span class="node-num">①</span>
+      <span>PROJECT_PLAN.md</span>
+    </div>
+    <div class="workflow-arrow">+</div>
+    <div class="workflow-node">
+      <span class="node-num">②</span>
+      <span>CLAUDE.md</span>
+    </div>
+    <div class="workflow-arrow">──▶</div>
+    <div class="workflow-node primary">
+      <span>🗺️</span>
+      <span>IMPLEMENTATION_PLAN.md</span>
+    </div>
+  </div>
+
+  <!-- PROMPT BLOCK -->
+  <div class="prompt-block">
+    <div class="prompt-block-label">
+      <span>⌨</span>
+      <span data-de="Prompt — Implementierungsplan generieren" data-en="Prompt — generate implementation plan">Prompt — Implementierungsplan generieren</span>
+    </div>
+    <pre>Based on @PROJECT_PLAN.md and @CLAUDE.md create a detailed IMPLEMENTATION_PLAN.md.
+Include: constraints table, project structure with all files, TypeScript interfaces
+with JSDoc, CSS variables specification, component specifications, and implementation
+phases with tasks and verification steps.
+Save to docs/IMPLEMENTATION_PLAN.md.</pre>
+  </div>
+
+  <!-- DOC VIEWER: IMPLEMENTATION_PLAN.md (excerpts) -->
+  <div class="doc-viewer">
+    <div class="doc-viewer-header">
+      <span>🗺️</span>
+      <code>docs/IMPLEMENTATION_PLAN.md</code>
+      <span style="margin-left:auto;" class="badge-done">✓ completed</span>
+    </div>
+    <div class="doc-viewer-body">
+      <h1>Implementation Plan: ChatView Demo MFE</h1>
+
+      <h2>Constraints</h2>
+      <table>
+        <tr>
+          <th>Constraint</th><th>Details</th>
+        </tr>
+        <tr>
+          <td><strong>CSS only</strong></td><td>No SCSS, Tailwind, or CSS-in-JS. Plain CSS Modules + globals.css</td>
+        </tr>
+        <tr>
+          <td><strong>Mock Service</strong></td><td>No real backend — MockChatService with simulated data</td>
+        </tr>
+        <tr>
+          <td><strong>FusionKit</strong></td><td>Must integrate with FusionKit authentication and logging</td>
+        </tr>
+        <tr>
+          <td><strong>Module Federation</strong></td><td>Must expose <code>./bootstrap</code> for MFE host integration</td>
+        </tr>
+      </table>
+
+      <h2>TypeScript Interfaces</h2>
+      <pre>interface User {
+  id: string;
+  name: string;
+  avatar: string;
+  isOnline: boolean;
+  isBot?: boolean;        // Bots are first-class users
+}
+
+interface Message {
+  id: string;
+  chatId: string;         // Prevents cross-chat render artifacts
+  senderId: string;
+  content: string;
+  timestamp: Date;
+}
+
+interface Chat {
+  id: string;
+  name: string;
+  participants: User[];   // Bots included here
+  messages: Message[];
+  unreadCount: number;
+  isTyping: boolean;
+}</pre>
+
+      <h2>Implementation Phases</h2>
+      <table>
+        <tr>
+          <th>Phase</th><th>Name</th><th>Scope</th><th>Status</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>Foundation</td>
+          <td>Interfaces, MockChatService, useChatService hook</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Layout</td>
+          <td>Two-column layout, resizable splitter</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Chat List</td>
+          <td>ChatList, ChatListItem, SearchInput</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Chat Content</td>
+          <td>ChatContent, ChatMessage, InputBar</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Bot Integration</td>
+          <td>BotServiceRegistry, MockBotService, pattern matching</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Polish</td>
+          <td>Animations, keyboard nav, ARIA, loading/empty states</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────── -->
+<!-- SECTION 04 — PHASEN KONKRET                 -->
+<!-- ──────────────────────────────────────────── -->
+<section>
+  <p class="section-label"
+     data-html-de="<span>04</span>Phasen konkret"
+     data-html-en="<span>04</span>Phases in Practice"><span>04</span>Phasen konkret</p>
+  <h2 class="section-title"
+      data-html-de="Start · Implement · Verify · <em>Stop</em>"
+      data-html-en="Start · Implement · Verify · <em>Stop</em>">Start · Implement · Verify · <em>Stop</em></h2>
+  <p class="section-lead"
+     data-de="Jede Phase folgt demselben Muster. Claude startet mit Kontext, implementiert im definierten Scope, verifiziert eigenständig — und stoppt. Nie läuft eine Phase in die nächste über."
+     data-en="Every phase follows the same pattern. Claude starts with context, implements within the defined scope, verifies autonomously — and stops. A phase never runs into the next.">Jede Phase folgt demselben Muster. Claude startet mit Kontext, implementiert im definierten Scope, verifiziert eigenständig — und stoppt. Nie läuft eine Phase in die nächste über.</p>
+
+  <!-- PHASE LOOP DIAGRAM -->
+  <div class="phase-loop">
+    <div class="phase-step">
+      <div class="phase-step-label">① Start</div>
+      <div class="phase-step-body">
+        <strong data-de="Kontext laden" data-en="Load context">Kontext laden</strong> —
+        <span data-de="Phase-Datei lesen, CLAUDE.md referenzieren, klares Ziel definieren. Was wird implementiert? Welche Dateien werden angefasst?"
+              data-en="Read the phase file, reference CLAUDE.md, define a clear goal. What is being implemented? Which files are touched?">Phase-Datei lesen, CLAUDE.md referenzieren, klares Ziel definieren. Was wird implementiert? Welche Dateien werden angefasst?</span>
+      </div>
+    </div>
+    <div class="phase-step">
+      <div class="phase-step-label">② Implement</div>
+      <div class="phase-step-body">
+        <strong data-de="Im Scope bleiben" data-en="Stay in scope">Im Scope bleiben</strong> —
+        <span data-de="Claude arbeitet strikt im definierten Scope. Abweichungen werden dokumentiert, nicht stillschweigend implementiert. Kein Scope Creep."
+              data-en="Claude works strictly within the defined scope. Deviations are documented, not silently implemented. No scope creep.">Claude arbeitet strikt im definierten Scope. Abweichungen werden dokumentiert, nicht stillschweigend implementiert. Kein Scope Creep.</span>
+      </div>
+    </div>
+    <div class="phase-step">
+      <div class="phase-step-label">③ Verify</div>
+      <div class="phase-step-body">
+        <strong data-de="Automatische Verifikation" data-en="Automatic verification">Automatische Verifikation</strong> —
+        <span data-de="Claude führt Build, Linter und Tests eigenständig aus. Schlägt etwas fehl: Fehler analysieren, Ursache beheben, erneut ausführen."
+              data-en="Claude runs build, linter, and tests autonomously. If something fails: analyze error, fix root cause, re-run.">Claude führt Build, Linter und Tests eigenständig aus. Schlägt etwas fehl: Fehler analysieren, Ursache beheben, erneut ausführen.</span>
+      </div>
+    </div>
+    <div class="phase-step">
+      <div class="phase-step-label stop">⚠ Stop</div>
+      <div class="phase-step-body">
+        <strong data-de="Explizit pausieren" data-en="Explicitly pause">Explizit pausieren</strong> —
+        <span data-de="Claude berichtet: Phase abgeschlossen. Die nächste Phase startet erst nach Bestätigung durch den Entwickler."
+              data-en="Claude reports: phase complete. The next phase only starts after confirmation by the developer.">Claude berichtet: Phase abgeschlossen. Die nächste Phase startet erst nach Bestätigung durch den Entwickler.</span>
+      </div>
+    </div>
+    <div class="phase-step">
+      <div class="phase-step-label">④ Commit</div>
+      <div class="phase-step-body">
+        <strong data-de="Review &amp; Commit" data-en="Review &amp; Commit">Review &amp; Commit</strong> —
+        <span data-de="Entwickler prüft manuell, führt /commit aus für strukturierte Commit-Message. Phase-Summary unter docs/plans/ speichern."
+              data-en="Developer reviews manually, runs /commit for structured commit message. Save phase summary under docs/plans/.">Entwickler prüft manuell, führt <code>/commit</code> aus für strukturierte Commit-Message. Phase-Summary unter <code>docs/plans/</code> speichern.</span>
+      </div>
+    </div>
+    <div class="phase-step">
+      <div class="phase-step-label">⑤ Reset</div>
+      <div class="phase-step-body">
+        <strong data-de="Kontext leeren" data-en="Clear context">Kontext leeren</strong> —
+        <span data-de="/clear ausführen vor der nächsten Phase. Frischer Start, voller Fokus, kein alter Ballast im Kontextfenster."
+              data-en="Run /clear before the next phase. Fresh start, full focus, no old overhead in the context window.">Führe <code>/clear</code> aus vor der nächsten Phase. Frischer Start, voller Fokus, kein alter Ballast im Kontextfenster.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOC VIEWER: phase1.md -->
+  <div class="doc-viewer" style="margin-top:3rem;">
+    <div class="doc-viewer-header">
+      <span>📄</span>
+      <code>docs/plans/phase1.md</code>
+      <span style="margin-left:auto;display:flex;gap:0.5rem;align-items:center;">
+        <span>Foundation</span>
+        <span class="badge-done">✓ completed</span>
+      </span>
+    </div>
+    <div class="doc-viewer-body">
+      <h1>Phase 1: Foundation</h1>
+
+      <h2>Overview</h2>
+      <p>Implement the foundation layer — TypeScript interfaces, mock service, and the custom hook that provides service access to all components.</p>
+
+      <h2>Current State</h2>
+      <ul>
+        <li><code>src/assets/css/globals.css</code> — Already exists with all CSS variables</li>
+        <li><code>src/interfaces/</code> — Directory exists, missing chat-related interfaces</li>
+        <li><code>src/services/</code> — Does NOT exist yet</li>
+        <li><code>src/hooks/</code> — Does NOT exist yet</li>
+      </ul>
+
+      <h2>Tasks</h2>
+      <table>
+        <tr><th>File</th><th>Action</th><th>Status</th></tr>
+        <tr>
+          <td><code>src/interfaces/User.ts</code></td>
+          <td>Create with JSDoc</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td><code>src/interfaces/Message.ts</code></td>
+          <td>Create with JSDoc</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td><code>src/interfaces/Chat.ts</code></td>
+          <td>Create with JSDoc</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td><code>src/interfaces/ChatService.ts</code></td>
+          <td>Create with JSDoc</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td><code>src/services/MockChatService.ts</code></td>
+          <td>Create — 4 users, 4 chats, 10 msgs each</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td><code>src/hooks/useChatService.ts</code></td>
+          <td>Create singleton hook</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+      </table>
+
+      <h2>Verification</h2>
+      <pre>npx eslint src/    # No errors
+npm run build      # Build successful
+# No UI changes in this phase — foundation only</pre>
+    </div>
+  </div>
+
+  <!-- DOC VIEWER: phase6.md -->
+  <div class="doc-viewer">
+    <div class="doc-viewer-header">
+      <span>✨</span>
+      <code>docs/plans/phase6.md</code>
+      <span style="margin-left:auto;display:flex;gap:0.5rem;align-items:center;">
+        <span>Polish</span>
+        <span class="badge-done">✓ completed</span>
+      </span>
+    </div>
+    <div class="doc-viewer-body">
+      <h1>Phase 6: Polish</h1>
+
+      <h2>Overview</h2>
+      <p>Production-quality polish: animated typing indicators, professional loading/empty states, full keyboard navigation, and comprehensive WCAG 2.1 Level AA accessibility.</p>
+
+      <h2>New Components</h2>
+      <table>
+        <tr><th>Component</th><th>Description</th><th>Status</th></tr>
+        <tr>
+          <td><code>InlineSpinner</code></td>
+          <td>Three bouncing dots animation — 3 size variants</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td><code>EmptyState</code></td>
+          <td>Icon + title + optional message — 4 SVG icon variants</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+        <tr>
+          <td><code>TypingIndicator</code></td>
+          <td>Bouncing dots + dynamic user names — ARIA live region</td>
+          <td><span class="badge-done">✓ done</span></td>
+        </tr>
+      </table>
+
+      <h2>Keyboard Navigation (ChatList)</h2>
+      <ul>
+        <li><strong>Arrow Down/Up</strong> — Move between chats</li>
+        <li><strong>Home / End</strong> — Jump to first/last chat</li>
+        <li><strong>Enter / Space</strong> — Select focused chat</li>
+        <li><strong>Escape</strong> — Clear search input</li>
+      </ul>
+
+      <h2>Accessibility (WCAG 2.1 AA)</h2>
+      <ul>
+        <li>ChatList: <code>role="listbox"</code>, <code>aria-activedescendant</code>, <code>aria-label</code></li>
+        <li>ChatListItem: <code>role="option"</code>, <code>aria-selected</code></li>
+        <li>TypingIndicator: <code>role="status"</code>, <code>aria-live="polite"</code></li>
+      </ul>
+
+      <details class="doc-details">
+        <summary data-de="Modified Files (8 components)" data-en="Modified Files (8 components)">Modified Files (8 components)</summary>
+        <div class="doc-details-body">
+          <ul>
+            <li><code>src/views/HomePage/HomePage.tsx</code> — InlineSpinner for chat list loading</li>
+            <li><code>src/components/ChatList/ChatList.tsx</code> — Keyboard nav + ARIA</li>
+            <li><code>src/components/ChatContent/ChatContent.tsx</code> — InlineSpinner, EmptyState, TypingIndicator</li>
+            <li><code>src/components/ChatListItem/ChatListItem.tsx</code> — role="option", aria-selected</li>
+            <li><code>src/components/SearchInput/SearchInput.tsx</code> — Escape key clear</li>
+            <li><code>src/assets/css/globals.css</code> — New CSS variables added</li>
+          </ul>
+        </div>
+      </details>
+
+      <h2>Testing Results</h2>
+      <table>
+        <tr><th>Check</th><th>Result</th></tr>
+        <tr>
+          <td><code>npx eslint src/</code></td>
+          <td><span class="badge-done">✓ no errors</span></td>
+        </tr>
+        <tr>
+          <td><code>npx tsc --noEmit</code></td>
+          <td><span class="badge-done">✓ no type errors</span></td>
+        </tr>
+        <tr>
+          <td><code>npm run build</code></td>
+          <td><span class="badge-done">✓ build successful</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <p data-de="Die Phase-Datei ist kein Ticket — sie ist ein Vertrag. Start, Scope, Verifikation und Stop sind explizit. Kein Guessing, kein Overrun."
+       data-en="The phase file is not a ticket — it is a contract. Start, scope, verification, and stop are explicit. No guessing, no overrun.">Die Phase-Datei ist kein Ticket — sie ist ein Vertrag. Start, Scope, Verifikation und Stop sind explizit. Kein Guessing, kein Overrun.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Claude Code · How To · vesser-chatview-demo</span>
+  <span>PROJECT_PLAN → CLAUDE.md → <span>IMPLEMENTATION_PLAN → Phases</span></span>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-de]').forEach(el => {
+      el.textContent = lang === 'de' ? el.dataset.de : el.dataset.en;
+    });
+
+    document.querySelectorAll('[data-html-de]').forEach(el => {
+      el.innerHTML = lang === 'de' ? el.dataset.htmlDe : el.dataset.htmlEn;
+    });
+  }
+</script>
+
+</body>
+</html>

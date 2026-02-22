@@ -33,6 +33,7 @@
     font-weight: 300;
     line-height: 1.7;
     overflow-x: hidden;
+    padding-top: 3rem;
   }
 
   /* ─── NOISE TEXTURE ─── */
@@ -46,12 +47,40 @@
     opacity: 0.6;
   }
 
-  /* ─── LANG SWITCHER ─── */
-  .lang-switcher {
+  /* ─── TOP NAV ─── */
+  .top-nav {
     position: fixed;
-    top: 2rem;
-    right: 2rem;
+    top: 0; left: 0; right: 0;
     z-index: 9999;
+    height: 3rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+  }
+
+  .nav-link:hover { color: var(--text); }
+  .nav-link.active { color: var(--accent); }
+
+  .nav-lang {
     display: flex;
     border: 1px solid var(--border);
     overflow: hidden;
@@ -736,7 +765,8 @@
     .advantage-banner { padding: 2rem; }
     .hero-scroll { left: 2rem; }
     .docs-grid { grid-template-columns: 1fr; }
-    .lang-switcher { top: 1rem; right: 1rem; }
+    .top-nav { padding: 0 1.5rem; }
+    .nav-links { gap: 1.25rem; }
   }
 
   /* Advanced details block */
@@ -804,11 +834,17 @@
 </head>
 <body>
 
-<!-- LANGUAGE SWITCHER -->
-<div class="lang-switcher">
-  <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
-  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
-</div>
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="nav-links">
+    <a href="index.html" class="nav-link active">Best Practice Guide</a>
+    <a href="howto.html" class="nav-link">How To</a>
+  </div>
+  <div class="nav-lang">
+    <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
 
 <!-- HERO -->
 <section class="hero">
