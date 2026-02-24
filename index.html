@@ -415,8 +415,11 @@
 
   .doc-card-icon {
     font-size: 1.4rem;
-    margin-bottom: 1.5rem;
+    line-height: 1;
     display: block;
+    position: absolute;
+    top: 1.3rem;
+    left: 1.2rem;
   }
 
   .doc-card h3 {
@@ -427,6 +430,7 @@
     text-transform: uppercase;
     color: var(--text);
     margin-bottom: 1rem;
+    margin-top: 3rem;
   }
 
   .doc-card ul {
@@ -483,6 +487,7 @@
     top: 1.0rem;
     right: 1.2rem;
     font-size: 2rem;
+    line-height: 1;
     color: var(--accent);
     opacity: 0.55;
     font-family: 'DM Mono', monospace;
@@ -491,6 +496,41 @@
 
   .doc-card--source:hover .doc-card-num {
     opacity: 1;
+  }
+
+  /* Optional variant for Tech Reference card */
+  .doc-card--optional {
+    opacity: 0.75;
+    border: 1px dashed var(--border);
+    box-shadow:
+      5px 5px 0 0 #111118,
+      5px 5px 0 1px #2a2a35,
+      10px 10px 0 0 #111118,
+      10px 10px 0 1px #222230;
+  }
+
+  .doc-card--optional:hover {
+    opacity: 1;
+  }
+
+  .optional-badge {
+    position: absolute;
+    top: 1.6rem;
+    right: 4.2rem;
+    font-size: 0.6rem;
+    font-family: 'DM Mono', monospace;
+    color: rgba(200, 240, 96, 0.6);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px dashed rgba(200, 240, 96, 0.4);
+    padding: 0.1rem 0.35rem;
+    border-radius: 2px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .doc-card--optional:hover .optional-badge {
+    color: var(--accent);
+    border-color: var(--accent);
   }
 
   /* "based on ①②③" footer in Implementation Plan card */
@@ -990,10 +1030,11 @@
       </div>
     </div>
 
-    <div class="doc-card doc-card--source">
+    <div class="doc-card doc-card--source doc-card--optional">
       <span class="doc-card-icon">🔌</span>
       <span class="doc-card-num">③</span>
-      <h3>Tech Reference<br><small style="font-weight:300;font-size:0.7rem;text-transform:none;letter-spacing:0;"
+      <span class="optional-badge" data-de="optional" data-en="optional">optional</span>
+      <h3>Tech Reference(s)<br><small style="font-weight:300;font-size:0.7rem;text-transform:none;letter-spacing:0;"
           data-de="(z.B. Zulip API)"
           data-en="(e.g. Zulip API)">(z.B. Zulip API)</small></h3>
       <ul>
@@ -1325,6 +1366,7 @@ globs: ["src/api/**/*.ts"]
     </span>
   </p>
 
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
   <table class="cmd-table">
     <thead>
       <tr>
@@ -1376,6 +1418,7 @@ globs: ["src/api/**/*.ts"]
       </tr>
     </tbody>
   </table>
+  </div>
 
   <div class="cmd-install">
     <div class="cmd-install-row">

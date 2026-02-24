@@ -534,6 +534,7 @@
     gap: 1rem;
     flex-wrap: nowrap;
     min-width: max-content;
+    padding-top: 1.2rem;
     padding-bottom: 0.5rem;
   }
 
@@ -560,6 +561,26 @@
   .workflow-node.primary {
     border-color: rgba(200,240,96,0.4);
     color: var(--accent);
+  }
+
+  .workflow-node.optional {
+    border-style: dashed;
+    border-color: var(--border);
+    position: relative;
+  }
+
+  .workflow-node.optional .node-optional-badge {
+    position: absolute;
+    top: -0.6rem;
+    right: 0.5rem;
+    font-size: 0.55rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px dashed var(--border);
+    padding: 0.1rem 0.4rem;
+    background: var(--bg);
   }
 
   .workflow-arrow {
@@ -933,6 +954,12 @@ docs/                  # PROJECT_PLAN.md, IMPLEMENTATION_PLAN.md, plans/</pre>
     <div class="workflow-node">
       <span class="node-num">②</span>
       <span>CLAUDE.md</span>
+    </div>
+    <div class="workflow-arrow">+</div>
+    <div class="workflow-node optional">
+      <span class="node-optional-badge" data-de="optional · mehrfach" data-en="optional · multiple">optional · multiple</span>
+      <span class="node-num">③</span>
+      <span>TECH_REFERENCE(S).md</span>
     </div>
     <div class="workflow-arrow">──▶</div>
     <div class="workflow-node primary">
