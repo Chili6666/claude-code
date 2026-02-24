@@ -830,6 +830,78 @@
     content: '–  ';
     color: var(--gold);
   }
+
+  /* Commands table */
+  .cmd-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.75rem;
+  }
+  .cmd-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: Syne, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cmd-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .cmd-table tr:last-child td { border-bottom: none; }
+  .cmd-table tr:hover td { background: var(--surface-2); }
+  .cmd-table .cmd-name {
+    color: var(--accent);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .cmd-install {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .cmd-install-row {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .cmd-install-row code {
+    flex: 1;
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+  }
+  .cmd-install-row code span { color: var(--accent); }
+  .cmd-copy-btn {
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    border-left: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 0.75rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, background 0.15s;
+  }
+  .cmd-copy-btn:hover { color: var(--accent); background: var(--surface-2); }
+  .cmd-copy-btn.copied {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .cmd-copy-btn svg { width: 14px; height: 14px; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -1238,6 +1310,88 @@ globs: ["src/api/**/*.ts"]
   </div>
 </section>
 
+<section style="padding: 7rem 4rem; border-top: 1px solid var(--border);">
+  <p class="section-label">
+    <span data-de="04" data-en="04">04</span>
+    <span data-de="Slash Commands" data-en="Slash Commands">Slash Commands</span>
+  </p>
+  <h2 class="section-title" style="margin-bottom:1rem;">
+    <span data-de="Verfügbare Commands" data-en="Available Commands">Available Commands</span>
+  </h2>
+  <p class="section-lead" style="margin-bottom:2rem;">
+    <span data-de="Installiere jeden Command einmalig per npx — danach steht er in jedem Projekt als Slash Command zur Verfügung."
+          data-en="Install any command once via npx — it is then available as a slash command in every project.">
+      Install any command once via npx — it is then available as a slash command in every project.
+    </span>
+  </p>
+
+  <table class="cmd-table">
+    <thead>
+      <tr>
+        <th data-de="Command" data-en="Command">Command</th>
+        <th data-de="Kategorie" data-en="Category">Category</th>
+        <th data-de="Beschreibung" data-en="Description">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cmd-name">/commit</td>
+        <td><span class="tag accent">Git</span></td>
+        <td data-de="Geführter Commit-Workflow: Änderungen analysieren, Prefix wählen, optional pushen."
+            data-en="Guided commit workflow with prefix selection and optional push.">
+          Guided commit workflow with prefix selection and optional push.
+        </td>
+      </tr>
+      <tr>
+        <td class="cmd-name">/organize-imports</td>
+        <td><span class="tag">Code quality</span></td>
+        <td data-de="Imports in .ts/.tsx-Dateien gruppieren und alphabetisch sortieren."
+            data-en="Sort &amp; group imports in .ts/.tsx files with section comments.">
+          Sort &amp; group imports in .ts/.tsx files with section comments.
+        </td>
+      </tr>
+      <tr>
+        <td class="cmd-name">/check-memoization</td>
+        <td><span class="tag">React</span></td>
+        <td data-de="Unnötiges useMemo, useCallback und React.memo in React-Komponenten aufspüren."
+            data-en="Detect unnecessary useMemo, useCallback, and React.memo usage.">
+          Detect unnecessary useMemo, useCallback, and React.memo usage.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="cmd-install">
+    <div class="cmd-install-row">
+      <code>npx github:Chili6666/claude-code commands add <span>commit</span></code>
+      <button class="cmd-copy-btn" onclick="copyCmd(this, 'npx github:Chili6666/claude-code commands add commit')" aria-label="Copy">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="5" width="9" height="9" rx="1.5"/>
+          <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cmd-install-row">
+      <code>npx github:Chili6666/claude-code commands add <span>organize-imports</span></code>
+      <button class="cmd-copy-btn" onclick="copyCmd(this, 'npx github:Chili6666/claude-code commands add organize-imports')" aria-label="Copy">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="5" width="9" height="9" rx="1.5"/>
+          <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cmd-install-row">
+      <code>npx github:Chili6666/claude-code commands add <span>check-memoization</span></code>
+      <button class="cmd-copy-btn" onclick="copyCmd(this, 'npx github:Chili6666/claude-code commands add check-memoization')" aria-label="Copy">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="5" width="9" height="9" rx="1.5"/>
+          <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <span>Claude Code · Best Practice · ChatView Microfrontend</span>
@@ -1245,6 +1399,18 @@ globs: ["src/api/**/*.ts"]
 </footer>
 
 <script>
+  function copyCmd(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      const original = btn.innerHTML;
+      btn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg>`;
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = original;
+      }, 1800);
+    });
+  }
+
   function setLang(lang) {
     document.getElementById('btn-de').classList.toggle('active', lang === 'de');
     document.getElementById('btn-en').classList.toggle('active', lang === 'en');
