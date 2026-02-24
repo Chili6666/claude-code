@@ -6,7 +6,7 @@ const [target, action, name] = process.argv.slice(2);
 
 const TARGETS = {
   commands: {
-    available: ['commit', 'organize-imports', 'check-memoization'],
+    available: ['commit', 'organize-imports', 'check-memoization', 'start-interviewing', 'plan-phases'],
     srcDir: 'commands',
     destDir: path.join('.claude', 'commands'),
     ext: '.md',
