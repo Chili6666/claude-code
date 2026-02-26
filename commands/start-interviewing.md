@@ -33,66 +33,74 @@ Always conduct the interview in English. Ask up to 4 questions per turn.
 ### If "Project Plan" was selected
 
 **Turn 1 — Overview & Purpose:**
-- "What is this project? What problem does it solve?"
-- "Who is it for — who are the users or stakeholders?"
+- "What is this project? Give a brief overview of what it does."
+- "What is the purpose of this project? What problem does it solve and who benefits?"
 
-**Turn 2 — Features & Tech:**
-- "What are the core features? List the main things the project must do."
-- "What technology stack will you use? (languages, frameworks, tools, hosting)"
+**Turn 2 — Functionality & Tech:**
+- "What is the core functionality? Describe the main things the project must do."
+- "What technology stack will you use? (languages, frameworks, libraries, tools, hosting)"
 
-**Turn 3 — Quality & References:**
-- "What non-functional qualities matter most? (e.g. performance, UX, security, scalability)"
-- "Are there related docs, APIs, or repos to reference?"
+**Turn 3 — Features & References:**
+- "What are the key features? List the most important capabilities and qualities."
+- "Are there related documents, APIs, repos, or external resources to reference?"
 
 ---
 
 ### If "Feature Plan" was selected
 
-**Turn 1 — Feature Identity:**
-- "What is the name of this feature?"
-- "What problem does it solve, and who benefits from it? (user story or goal)"
+**Turn 1 — Overview & Purpose:**
+- "What is the name of this feature? Give a brief overview of what it does."
+- "What is the purpose of this feature? What problem does it solve and who benefits?"
 
-**Turn 2 — Scope & Approach:**
-- "What are the acceptance criteria — how do we know the feature is done?"
-- "What is the intended technical approach? (components, APIs, data changes, etc.)"
+**Turn 2 — Functionality & Tech:**
+- "What is the core functionality? Describe what this feature must do (acceptance criteria, behavior)."
+- "What technology stack or technical approach is involved? (components, APIs, data changes, etc.)"
 
-**Turn 3 — Dependencies & Boundaries:**
-- "Are there dependencies on other features, services, or third-party tools?"
-- "What is explicitly out of scope for this feature?"
+**Turn 3 — Features & References:**
+- "What are the key features or sub-capabilities of this feature?"
+- "Are there related documents, dependencies, or external resources to reference?"
 
 ---
 
-## Step 4: Exit Plan Mode for Approval
+## Step 4: Write the Plan to the Plan File
 
-After collecting all answers, call `ExitPlanMode`. This surfaces the plan to the user for review and approval before any files are written.
+After collecting all answers, write the **full plan document content** (using the templates from Step 5) into the plan file that plan mode provides. This is the file the user will review.
 
-In the plan, summarize what will be written to the output file using the sections defined in Step 5.
+The plan file MUST contain:
+1. The complete plan document exactly as it will be saved (using the templates below)
+2. A final section titled `## Output` stating the target file path where the document will be written
 
-## Step 5: Write the Plan Document
+Then call `ExitPlanMode` to surface the plan for user review and approval.
 
-On user approval, create the appropriate file using the `Write` tool.
+## Step 5: Write the Plan Document to `docs/`
+
+**CRITICAL**: After the user approves the plan, the FIRST action must be writing the plan document to the `docs/` folder using the `Write` tool. Do NOT proceed to any implementation work until the plan file has been written.
+
+Target paths:
+- Project Plan → `docs/PROJECT_PLAN.md`
+- Feature Plan → `docs/features/<feature-name>.md` (create directory if needed)
 
 ---
 
 ### Project Plan → `docs/PROJECT_PLAN.md`
 
 ```markdown
-# Project Plan
+# Project Plan: <Project Name>
 
-## Overview
+## Project Overview
 [One-paragraph summary of what the project is and what it does]
 
 ## Purpose
 [The problem it solves and who benefits from it]
 
-## Core Features
-[Bullet list of the core features and capabilities]
+## Core Functionality
+[Bullet list of the core functionality and what the project must do]
 
 ## Technology Stack
 [Languages, frameworks, libraries, tools, and hosting]
 
-## Key Qualities
-[Key non-functional qualities: performance, UX, security, scalability, etc.]
+## Key Features
+[Bullet list of the most important capabilities, qualities, and features]
 
 ## Related Documents
 [Links or references to related docs, APIs, repos, or external resources]
@@ -107,20 +115,23 @@ Use the feature name from the interview (lowercase, hyphenated) as the filename.
 ```markdown
 # Feature Plan: <Feature Name>
 
-## Goal
+## Project Overview
+[One-paragraph summary of what this feature is and what it does]
+
+## Purpose
 [The problem this feature solves and who benefits from it]
 
-## Acceptance Criteria
-[Bullet list — measurable conditions that define "done"]
+## Core Functionality
+[Bullet list of the core functionality — what the feature must do, acceptance criteria, behavior]
 
-## Technical Approach
-[Components, APIs, data changes, or architectural decisions involved]
+## Technology Stack
+[Components, APIs, data changes, technical approach, or architectural decisions involved]
 
-## Dependencies
-[Other features, services, or third-party tools this feature relies on]
+## Key Features
+[Bullet list of sub-capabilities, key qualities, or important aspects of this feature]
 
-## Out of Scope
-[What is explicitly not part of this feature]
+## Related Documents
+[Dependencies, related features, services, external resources, or reference docs]
 ```
 
 ---
@@ -129,7 +140,8 @@ Use the feature name from the interview (lowercase, hyphenated) as the filename.
 
 - Always enter plan mode first — the interview must happen inside plan mode
 - Ask all topic areas before exiting plan mode
-- Write the file only after the user approves the plan
+- **After approval, IMMEDIATELY write the plan document to `docs/` before doing anything else**
+- The plan document is the sole deliverable of this command — do not start implementation
 - Keep each section concise and factual based on the user's answers
 - Do not invent or assume information the user did not provide
 - Feature plan files go into `docs/features/` — create the directory if needed
