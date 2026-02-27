@@ -23,7 +23,7 @@ const PROFILES = {
   typescript: {
     description: 'TypeScript development: type safety rules + quality commands',
     rules:    ['typescript', 'security'],
-    commands: ['commit', 'organize-imports', 'check-memoization'],
+    commands: ['commit', 'organize-imports', 'check-memoization', 'plan-phases', 'start-interviewing'],
   },
 };
 

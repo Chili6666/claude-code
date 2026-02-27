@@ -10,7 +10,8 @@
       "Bash(gh run list:*)",
       "Bash(git checkout:*)",
       "Bash(gh pr create:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []
