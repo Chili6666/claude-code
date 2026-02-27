@@ -11,6 +11,20 @@ const TARGETS = {
     destDir: path.join('.claude', 'commands'),
     ext: '.md',
   },
+  rules: {
+    available: ['security', 'typescript'],
+    srcDir: 'rules',
+    destDir: path.join('.claude', 'rules'),
+    ext: '.md',
+  },
+};
+
+const PROFILES = {
+  typescript: {
+    description: 'TypeScript development: type safety rules + quality commands',
+    rules:    ['typescript', 'security'],
+    commands: ['commit', 'organize-imports', 'check-memoization'],
+  },
 };
 
 function printUsage() {
@@ -20,6 +34,47 @@ function printUsage() {
   for (const [t, cfg] of Object.entries(TARGETS)) {
     console.log(`  ${t}    available: ${cfg.available.join(', ')}`);
   }
+  console.log('');
+  console.log('Profiles (install a curated bundle with: profile add <name>):');
+  for (const [pName, pCfg] of Object.entries(PROFILES)) {
+    console.log(`  ${pName}    ${pCfg.description}`);
+    console.log(`             rules:    ${pCfg.rules.join(', ')}`);
+    console.log(`             commands: ${pCfg.commands.join(', ')}`);
+  }
+}
+
+if (target === 'profile') {
+  if (action !== 'add') {
+    console.error(`Error: unknown action "${action || ''}". Only "add" is supported.`);
+    printUsage();
+    process.exit(1);
+  }
+
+  const profile = PROFILES[name];
+  if (!name || !profile) {
+    console.error(`Error: unknown profile "${name || ''}"`);
+    console.error(`Available profiles: ${Object.keys(PROFILES).join(', ')}`);
+    process.exit(1);
+  }
+
+  console.log(`Installing profile "${name}"...`);
+  console.log('');
+
+  for (const [itemType, items] of [['rules', profile.rules], ['commands', profile.commands]]) {
+    const cfg = TARGETS[itemType];
+    for (const itemName of items) {
+      const src     = path.join(__dirname, '..', cfg.srcDir, `${itemName}${cfg.ext}`);
+      const destDir = path.join(process.cwd(), cfg.destDir);
+      const dest    = path.join(destDir, `${itemName}${cfg.ext}`);
+      fs.mkdirSync(destDir, { recursive: true });
+      fs.copyFileSync(src, dest);
+      console.log(`  ✓ Installed ${itemType}/${itemName} → ${dest}`);
+    }
+  }
+
+  console.log('');
+  console.log(`✓ Profile "${name}" installed successfully.`);
+  process.exit(0);
 }
 
 if (!target || !TARGETS[target]) {
@@ -48,4 +103,4 @@ const dest = path.join(destDir, `${name}${cfg.ext}`);
 
 fs.mkdirSync(destDir, { recursive: true });
 fs.copyFileSync(src, dest);
-console.log(`✓ Installed /${name} → ${dest}`);
+console.log(`✓ Installed ${target}/${name} → ${dest}`);

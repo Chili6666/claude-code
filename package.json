@@ -5,6 +5,6 @@
   "bin": {
     "claude-code-commands": "bin/install.js"
   },
-  "files": ["bin/", "commands/"],
+  "files": ["bin/", "commands/", "rules/"],
   "engines": { "node": ">=16" }
 }

@@ -1469,6 +1469,128 @@ globs: ["src/api/**/*.ts"]
   </div>
 </section>
 
+<!-- SECTION 05: RULES -->
+<section style="padding: 7rem 4rem; border-top: 1px solid var(--border);">
+  <p class="section-label">
+    <span data-de="05" data-en="05">05</span>
+    <span data-de="Rules" data-en="Rules">Rules</span>
+  </p>
+  <h2 class="section-title" style="margin-bottom:1rem;">
+    <span data-de="Verfügbare Rules" data-en="Available Rules">Available Rules</span>
+  </h2>
+  <p class="section-lead" style="margin-bottom:2rem;">
+    <span data-de="Rules werden automatisch auf passende Dateien angewendet — kein manueller Aufruf nötig. Einmalig per npx installieren."
+          data-en="Rules are applied automatically to matching files — no manual invocation needed. Install once via npx.">
+      Rules are applied automatically to matching files — no manual invocation needed. Install once via npx.
+    </span>
+  </p>
+
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+  <table class="cmd-table">
+    <thead>
+      <tr>
+        <th data-de="Rule" data-en="Rule">Rule</th>
+        <th data-de="Gilt für" data-en="Applies to">Applies to</th>
+        <th data-de="Beschreibung" data-en="Description">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cmd-name">security</td>
+        <td><span class="tag">*.ts · *.tsx · *.js · *.jsx</span></td>
+        <td data-de="Verhindert hardcodierte Secrets, unsichere Abhängigkeiten und OWASP-Schwachstellen."
+            data-en="Prevents hardcoded secrets, insecure dependencies, and OWASP vulnerabilities.">
+          Prevents hardcoded secrets, insecure dependencies, and OWASP vulnerabilities.
+        </td>
+      </tr>
+      <tr>
+        <td class="cmd-name">typescript</td>
+        <td><span class="tag">*.ts · *.tsx</span></td>
+        <td data-de="Erzwingt Import-Reihenfolge, Typ-Sicherheit und konsistente Code-Qualität in TypeScript-Projekten."
+            data-en="Enforces import ordering, type safety, and consistent code quality in TypeScript projects.">
+          Enforces import ordering, type safety, and consistent code quality in TypeScript projects.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="cmd-install">
+    <div class="cmd-install-row">
+      <code>npx github:Chili6666/claude-code rules add <span>security</span></code>
+      <button class="cmd-copy-btn" onclick="copyCmd(this, 'npx github:Chili6666/claude-code rules add security')" aria-label="Copy">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="5" width="9" height="9" rx="1.5"/>
+          <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cmd-install-row">
+      <code>npx github:Chili6666/claude-code rules add <span>typescript</span></code>
+      <button class="cmd-copy-btn" onclick="copyCmd(this, 'npx github:Chili6666/claude-code rules add typescript')" aria-label="Copy">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="5" width="9" height="9" rx="1.5"/>
+          <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 06: PROFILES -->
+<section style="padding: 7rem 4rem; border-top: 1px solid var(--border);">
+  <p class="section-label">
+    <span data-de="06" data-en="06">06</span>
+    <span data-de="Profile" data-en="Profiles">Profiles</span>
+  </p>
+  <h2 class="section-title" style="margin-bottom:1rem;">
+    <span data-de="Kuratierte Bundles" data-en="Curated Bundles">Curated Bundles</span>
+  </h2>
+  <p class="section-lead" style="margin-bottom:2rem;">
+    <span data-de="Ein Profil installiert Rules und Commands auf einmal — ideal für einen schnellen Projektstart."
+          data-en="A profile installs rules and commands in one step — ideal for getting a project set up quickly.">
+      A profile installs rules and commands in one step — ideal for getting a project set up quickly.
+    </span>
+  </p>
+
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+  <table class="cmd-table">
+    <thead>
+      <tr>
+        <th data-de="Profil" data-en="Profile">Profile</th>
+        <th data-de="Enthält" data-en="Includes">Includes</th>
+        <th data-de="Beschreibung" data-en="Description">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cmd-name">typescript</td>
+        <td>
+          <span class="tag" style="display:block;margin-bottom:0.25rem;">rules: typescript, security</span>
+          <span class="tag">commands: commit, organize-imports, check-memoization</span>
+        </td>
+        <td data-de="TypeScript-Entwicklung: Typ-Sicherheits-Rules und Qualitäts-Commands in einem Schritt."
+            data-en="TypeScript development: type safety rules and quality commands in one step.">
+          TypeScript development: type safety rules and quality commands in one step.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="cmd-install">
+    <div class="cmd-install-row">
+      <code>npx github:Chili6666/claude-code profile add <span>typescript</span></code>
+      <button class="cmd-copy-btn" onclick="copyCmd(this, 'npx github:Chili6666/claude-code profile add typescript')" aria-label="Copy">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="5" width="9" height="9" rx="1.5"/>
+          <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <span>Claude Code · Best Practice · ChatView Microfrontend</span>
