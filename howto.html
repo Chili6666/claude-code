@@ -720,8 +720,8 @@
     <a href="howto.html" class="nav-link active">How To</a>
   </div>
   <div class="nav-lang">
-    <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
-    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-de" onclick="setLang('de')">DE</button>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
   </div>
 </nav>
 
@@ -1325,6 +1325,8 @@ npm run build      # Build successful
       el.innerHTML = lang === 'de' ? el.dataset.htmlDe : el.dataset.htmlEn;
     });
   }
+
+  setLang('en');
 </script>
 
 </body>
