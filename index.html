@@ -953,8 +953,8 @@
     <a href="howto.html" class="nav-link">How To</a>
   </div>
   <div class="nav-lang">
-    <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
-    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-de" onclick="setLang('de')">DE</button>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
   </div>
 </nav>
 
@@ -1623,6 +1623,8 @@ globs: ["src/api/**/*.ts"]
       el.innerHTML = lang === 'de' ? el.dataset.htmlDe : el.dataset.htmlEn;
     });
   }
+
+  setLang('en');
 </script>
 
 </body>
