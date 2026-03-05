@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Claude Code — Best Practice Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -797,8 +798,36 @@
     to { width: 40px; }
   }
 
+  /* ─── CLAWD MASCOT ─── */
+  .clawd-mascot {
+    position: absolute;
+    top: 4rem;
+    right: 4rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s, clawd-float 3s ease-in-out infinite 1.6s;
+    filter: drop-shadow(0 0 24px rgba(200, 240, 96, 0.35));
+    image-rendering: pixelated;
+  }
+
+  .clawd-eye-blink {
+    opacity: 0;
+    animation: clawd-blink 5s ease-in-out infinite;
+  }
+
+  @keyframes clawd-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-14px); }
+  }
+
+  @keyframes clawd-blink {
+    0%, 87%, 95%, 100% { opacity: 0; }
+    90%, 93% { opacity: 1; }
+  }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width: 768px) {
+    .clawd-mascot { display: none; }
+
     .hero, section, footer { padding-left: 2rem; padding-right: 2rem; }
     .step:hover { margin: 0 -2rem; padding: 2.5rem 2rem; }
     .phase-block { grid-template-columns: 1fr; }
@@ -960,6 +989,31 @@
 
 <!-- HERO -->
 <section class="hero">
+
+  <!-- CLAWD PIXEL MASCOT -->
+  <svg class="clawd-mascot" width="128" height="112" viewBox="0 0 128 112" xmlns="http://www.w3.org/2000/svg" aria-label="Clawd">
+    <!-- Bumps -->
+    <rect x="16" y="0" width="32" height="16" fill="#c8f060"/>
+    <rect x="80" y="0" width="32" height="16" fill="#c8f060"/>
+    <!-- Head -->
+    <rect x="0" y="16" width="128" height="16" fill="#c8f060"/>
+    <!-- Face: yellow around eyes -->
+    <rect x="0" y="32" width="16" height="32" fill="#c8f060"/>
+    <rect x="48" y="32" width="32" height="32" fill="#c8f060"/>
+    <rect x="112" y="32" width="16" height="32" fill="#c8f060"/>
+    <!-- Body -->
+    <rect x="0" y="64" width="128" height="16" fill="#c8f060"/>
+    <!-- Legs -->
+    <rect x="16" y="80" width="32" height="32" fill="#c8f060"/>
+    <rect x="80" y="80" width="32" height="32" fill="#c8f060"/>
+    <!-- Dark eyes -->
+    <rect x="16" y="32" width="32" height="32" fill="#0a0a0f"/>
+    <rect x="80" y="32" width="32" height="32" fill="#0a0a0f"/>
+    <!-- Blink overlays -->
+    <rect class="clawd-eye-blink" x="16" y="32" width="32" height="32" fill="#c8f060"/>
+    <rect class="clawd-eye-blink" x="80" y="32" width="32" height="32" fill="#c8f060"/>
+  </svg>
+
   <p class="hero-tag">Claude Code · Best Practice Guide</p>
   <p class="hero-author"
      data-de="von Volker Esser"
@@ -1128,54 +1182,46 @@ globs: ["src/api/**/*.ts"]
      data-html-de="<span>02</span>Phasen-Driven Development"
      data-html-en="<span>02</span>Phase-Driven Development"><span>02</span>Phasen-Driven Development</p>
   <h2 class="section-title"
-      data-html-de="Strukturierte<br><em>Implementierungsphasen</em>"
-      data-html-en="Structured<br><em>Implementation Phases</em>">Strukturierte<br><em>Implementierungsphasen</em></h2>
+      data-html-de="Start · Implement · Verify · <em>Stop</em>"
+      data-html-en="Start · Implement · Verify · <em>Stop</em>">Start · Implement · Verify · <em>Stop</em></h2>
   <p class="section-lead"
-     data-de="Jede Phase hat ein klares Ziel, definierte Abschlusskriterien und wird mit einer Zusammenfassung dokumentiert. Claude stoppt nach jeder Phase — kein unkontrollierter Vorlauf."
-     data-en="Each phase has a clear goal, defined completion criteria, and is documented with a summary. Claude stops after each phase — no uncontrolled runaway.">Jede Phase hat ein klares Ziel, definierte Abschlusskriterien und wird mit einer Zusammenfassung dokumentiert. Claude stoppt nach jeder Phase — kein unkontrollierter Vorlauf.</p>
+     data-de="Every phase follows the same pattern. Claude starts with context, implements within the defined scope, verifies autonomously — and stops. A phase never runs into the next."
+     data-en="Every phase follows the same pattern. Claude starts with context, implements within the defined scope, verifies autonomously — and stops. A phase never runs into the next.">Every phase follows the same pattern. Claude starts with context, implements within the defined scope, verifies autonomously — and stops. A phase never runs into the next.</p>
 
   <div class="phase-container">
     <div class="phase-block">
       <div class="phase-label"
-           data-de="Phase Start"
-           data-en="Phase Start">Phase Start</div>
+           data-de="① Start"
+           data-en="① Start">① Start</div>
       <div class="phase-body">
-        <h4 data-de="Ziel der Phase definieren"
-            data-en="Define the Phase Goal">Ziel der Phase definieren</h4>
-        <p data-de="Jede Phase beginnt mit einem klaren, messbaren Ziel. Was wird implementiert? Welche Akzeptanzkriterien gelten?"
-           data-en="Each phase begins with a clear, measurable goal. What is being implemented? What acceptance criteria apply?">Jede Phase beginnt mit einem klaren, messbaren Ziel. Was wird implementiert? Welche Akzeptanzkriterien gelten?</p>
-        <div class="tags" style="margin-top:0.75rem;">
-          <span class="tag accent"
-                data-de="@file / @docs" data-en="@file / @docs">@file / @docs</span>
-          <span class="tag"
-                data-de="Bild / Design" data-en="Image / Design">Bild / Design</span>
-          <span class="tag"
-                data-de="Pipe-Daten" data-en="Pipe Data">Pipe-Daten</span>
-        </div>
+        <h4 data-de="Load context"
+            data-en="Load context">Load context</h4>
+        <p data-de="Read the phase file, reference CLAUDE.md, define a clear goal. What is being implemented? Which files are touched?"
+           data-en="Read the phase file, reference CLAUDE.md, define a clear goal. What is being implemented? Which files are touched?">Read the phase file, reference CLAUDE.md, define a clear goal. What is being implemented? Which files are touched?</p>
       </div>
     </div>
 
     <div class="phase-block">
       <div class="phase-label"
-           data-de="Implementierung"
-           data-en="Implementation">Implementierung</div>
+           data-de="② Implement"
+           data-en="② Implement">② Implement</div>
       <div class="phase-body">
-        <h4 data-de="Code schreiben &amp; iterieren"
-            data-en="Write Code &amp; Iterate">Code schreiben &amp; iterieren</h4>
-        <p data-de="Claude arbeitet gezielt im Scope der aktuellen Phase. Abweichungen werden dokumentiert, nicht stillschweigend implementiert."
-           data-en="Claude works precisely within the scope of the current phase. Deviations are documented, not silently implemented.">Claude arbeitet gezielt im Scope der aktuellen Phase. Abweichungen werden dokumentiert, nicht stillschweigend implementiert.</p>
+        <h4 data-de="Stay in scope"
+            data-en="Stay in scope">Stay in scope</h4>
+        <p data-de="Claude works strictly within the defined scope. Deviations are documented, not silently implemented. No scope creep."
+           data-en="Claude works strictly within the defined scope. Deviations are documented, not silently implemented. No scope creep.">Claude works strictly within the defined scope. Deviations are documented, not silently implemented. No scope creep.</p>
       </div>
     </div>
 
     <div class="phase-block">
       <div class="phase-label"
-           data-de="Phase Ende"
-           data-en="Phase End">Phase Ende</div>
+           data-de="③ Verify"
+           data-en="③ Verify">③ Verify</div>
       <div class="phase-body">
-        <h4 data-de="Abschlusskriterien erfüllen"
-            data-en="Meet Completion Criteria">Abschlusskriterien erfüllen</h4>
-        <p data-de="Claude führt diese Checks eigenständig aus — nicht als Checkliste für dich, sondern als automatische Verifikation. Schlägt Build oder Test fehl, analysiert Claude den Fehler, behebt die Ursache und führt die Prüfung erneut aus."
-           data-en="Claude runs these checks autonomously — not as a checklist for you, but as automatic verification. If a build or test fails, Claude analyzes the error, fixes the root cause, and re-runs the check.">Claude führt diese Checks eigenständig aus — nicht als Checkliste für dich, sondern als automatische Verifikation. Schlägt Build oder Test fehl, analysiert Claude den Fehler, behebt die Ursache und führt die Prüfung erneut aus.</p>
+        <h4 data-de="Automatic verification"
+            data-en="Automatic verification">Automatic verification</h4>
+        <p data-de="Claude runs build, linter, and tests autonomously. If something fails: analyze error, fix root cause, re-run."
+           data-en="Claude runs build, linter, and tests autonomously. If something fails: analyze error, fix root cause, re-run.">Claude runs build, linter, and tests autonomously. If something fails: analyze error, fix root cause, re-run.</p>
         <div class="phase-checks">
           <span class="check" data-de="Build ausführen" data-en="Run Build">Build ausführen</span>
           <span class="check" data-de="Linter ausführen" data-en="Run Linter">Linter ausführen</span>
@@ -1187,22 +1233,22 @@ globs: ["src/api/**/*.ts"]
     <div class="phase-block" style="border-top: 2px solid rgba(200,240,96,0.3);">
       <div class="phase-label" style="color: var(--gold);">⚠ Stopp</div>
       <div class="phase-body">
-        <h4 data-de="Nicht mit der nächsten Phase beginnen"
-            data-en="Do Not Start the Next Phase">Nicht mit der nächsten Phase beginnen</h4>
-        <p data-de="Claude hält explizit inne. Die nächste Phase startet erst nach Bestätigung — das ermöglicht Kontrolle, Feedback und bewusste Iteration."
-           data-en="Claude explicitly pauses. The next phase only starts after confirmation — this enables control, feedback, and deliberate iteration.">Claude hält explizit inne. Die nächste Phase startet erst nach Bestätigung — das ermöglicht Kontrolle, Feedback und bewusste Iteration.</p>
+        <h4 data-de="Explicitly pause"
+            data-en="Explicitly pause">Explicitly pause</h4>
+        <p data-de="Claude reports: phase complete. The next phase only starts after confirmation by the developer."
+           data-en="Claude reports: phase complete. The next phase only starts after confirmation by the developer.">Claude reports: phase complete. The next phase only starts after confirmation by the developer.</p>
       </div>
     </div>
 
     <div class="phase-block">
       <div class="phase-label"
-           data-de="Entwickler-Freigabe"
-           data-en="Developer Sign-off">Entwickler-Freigabe</div>
+           data-de="④ Commit"
+           data-en="④ Commit">④ Commit</div>
       <div class="phase-body">
-        <h4 data-de="Claude meldet: Phase abgeschlossen"
-            data-en="Claude reports: Phase complete">Claude meldet: Phase abgeschlossen</h4>
-        <p data-de="Claude informiert den Entwickler, sobald Build, Linter und alle definierten Kriterien erfüllt sind. Der Entwickler führt einen manuellen Abnahmetest durch — und committed die Phase mit <code>/commit</code>, das strukturierte Commit-Messages generiert."
-           data-en="Claude notifies the developer once build, linter, and all defined criteria pass. The developer performs a manual acceptance check — and commits the phase using <code>/commit</code>, which generates structured commit messages.">Claude informiert den Entwickler, sobald Build, Linter und alle definierten Kriterien erfüllt sind. Der Entwickler führt einen manuellen Abnahmetest durch — und committed die Phase mit <code>/commit</code>, das strukturierte Commit-Messages generiert.</p>
+        <h4 data-de="Review &amp; Commit"
+            data-en="Review &amp; Commit">Review &amp; Commit</h4>
+        <p data-de="Developer reviews manually, runs <code>/commit</code> for structured commit message. Save phase summary under <code>docs/plans/</code>."
+           data-en="Developer reviews manually, runs <code>/commit</code> for structured commit message. Save phase summary under <code>docs/plans/</code>.">Developer reviews manually, runs <code>/commit</code> for structured commit message. Save phase summary under <code>docs/plans/</code>.</p>
         <div class="phase-checks">
           <span class="check" data-de="Manuelle Kontrolle" data-en="Manual review">Manuelle Kontrolle</span>
           <span class="check optional" data-de="Screenshot" data-en="Screenshot">Screenshot</span>
@@ -1213,28 +1259,13 @@ globs: ["src/api/**/*.ts"]
 
     <div class="phase-block">
       <div class="phase-label"
-           data-de="Dokumentation"
-           data-en="Documentation">Dokumentation</div>
+           data-de="⑤ Reset"
+           data-en="⑤ Reset">⑤ Reset</div>
       <div class="phase-body">
-        <h4 data-de="Phase-Summary erstellen &amp; Taskliste aktualisieren"
-            data-en="Create Phase Summary &amp; Update Task List">Phase-Summary erstellen &amp; Taskliste aktualisieren</h4>
-        <p data-html-de="Eine Zusammenfassung der Phase wird unter <code>docs/phases/</code> gespeichert. Die Taskliste im Implementation Plan wird aktualisiert."
-           data-html-en="A summary of the phase is saved under <code>docs/phases/</code>. The task list in the Implementation Plan is updated.">Eine Zusammenfassung der Phase wird unter <code>docs/phases/</code> gespeichert. Die Taskliste im Implementation Plan wird aktualisiert.</p>
-        <div class="tags" style="margin-top:1rem;">
-          <span class="tag accent">docs/phases/phase-01-summary.md</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="phase-block">
-      <div class="phase-label"
-           data-de="Kontext Reset"
-           data-en="Context Reset">Kontext Reset</div>
-      <div class="phase-body">
-        <h4 data-de="Kontext leeren vor der nächsten Phase"
-            data-en="Clear Context Before the Next Phase">Kontext leeren vor der nächsten Phase</h4>
-        <p data-html-de="Das Kontextfenster akkumuliert über eine Phase hinweg viele Informationen. Vor dem Start der nächsten Phase sollte der Kontext mit <code>/clear</code> zurückgesetzt werden — so startet Claude ohne alten Ballast und mit vollem Fokus auf die neue Phase."
-           data-html-en="The context window accumulates a lot of information over a phase. Before starting the next phase, clear the context with <code>/clear</code> — this way Claude starts without old overhead and with full focus on the new phase.">Das Kontextfenster akkumuliert über eine Phase hinweg viele Informationen. Vor dem Start der nächsten Phase sollte der Kontext mit <code>/clear</code> zurückgesetzt werden — so startet Claude ohne alten Ballast und mit vollem Fokus auf die neue Phase.</p>
+        <h4 data-de="Clear context"
+            data-en="Clear context">Clear context</h4>
+        <p data-de="Run <code>/clear</code> before the next phase. Fresh start, full focus, no old overhead in the context window."
+           data-en="Run <code>/clear</code> before the next phase. Fresh start, full focus, no old overhead in the context window.">Run <code>/clear</code> before the next phase. Fresh start, full focus, no old overhead in the context window.</p>
         <div class="phase-checks">
           <span class="check" data-de="/clear ausführen" data-en="Run /clear">/clear ausführen</span>
           <span class="tag" data-de="Kontext ist jetzt leer" data-en="Context is now clean">Kontext ist jetzt leer</span>

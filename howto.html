@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Claude Code — How To</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -761,7 +762,14 @@
     <pre>I want to build [short description]. Interview me using the AskUserQuestion tool.
 Ask about core functionality, technology stack, key features, and constraints.
 Keep interviewing until you have enough information, then write a PROJECT_PLAN.md
-to docs/PROJECT_PLAN.md.</pre>
+to docs/PROJECT_PLAN.md using exactly this structure:
+
+## Project Overview
+## Purpose
+## Core Functionality
+## Technology Stack
+## Key Features
+## Related Documents</pre>
   </div>
 
   <!-- DOC VIEWER: PROJECT_PLAN.md -->
@@ -975,10 +983,54 @@ docs/                  # PROJECT_PLAN.md, IMPLEMENTATION_PLAN.md, plans/</pre>
       <span>⌨</span>
       <span data-de="Prompt — Implementierungsplan generieren" data-en="Prompt — generate implementation plan">Prompt — Implementierungsplan generieren</span>
     </div>
-    <pre>Based on @PROJECT_PLAN.md and @CLAUDE.md create a detailed IMPLEMENTATION_PLAN.md.
-Include: constraints table, project structure with all files, TypeScript interfaces
-with JSDoc, CSS variables specification, component specifications, and implementation
-phases with tasks and verification steps.
+    <pre>Based on @PROJECT_PLAN.md and @CLAUDE.md create a detailed IMPLEMENTATION_PLAN.md
+with the following sections:
+
+## Table of Contents
+## 1. Constraints
+## 2. Project Structure
+## 3. Interfaces / Type Definitions
+## 4. CSS Variables Specification
+## 5. Component Specifications
+## 6. Implementation Phases
+## 7. Critical Files
+## 8. Task Checklist
+## 9. Verification Steps
+## Related Documents
+
+Every phase in section 6 must end with this block:
+
+**End of Phase Expectations:**
+1. Create docs/plans/phase&lt;N&gt;.md documenting what was implemented
+2. Run: &lt;verification commands&gt;
+3. Stop here. Do not start with the next phase.
+
+Each phase follows this execution protocol:
+
+## Start
+Load context — Read the phase file, reference CLAUDE.md, define a clear goal.
+What is being implemented? Which files are touched?
+
+## Implement
+Stay in scope — Work strictly within the defined scope.
+Deviations are documented, not silently implemented. No scope creep.
+
+## Verify
+Automatic verification — Run build, linter, and tests autonomously.
+If something fails: analyze error, fix root cause, re-run.
+
+## Stop
+Explicitly pause — Report: phase complete.
+The next phase only starts after confirmation by the developer.
+
+## Commit
+Review & Commit — Developer reviews manually, runs /commit for structured
+commit message. Save phase summary under docs/plans/.
+
+## Reset
+Clear context — Run /clear before the next phase.
+Fresh start, full focus, no old overhead in the context window.
+
 Save to docs/IMPLEMENTATION_PLAN.md.</pre>
   </div>
 
