@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background -->
+  <rect width="32" height="32" fill="#111118"/>
+  <!-- Bumps -->
+  <rect x="8"  y="0"  width="8" height="8" fill="#c8f060"/>
+  <rect x="20" y="0"  width="8" height="8" fill="#c8f060"/>
+  <!-- Head -->
+  <rect x="0"  y="8"  width="32" height="4" fill="#c8f060"/>
+  <!-- Face: yellow around eyes -->
+  <rect x="0"  y="12" width="4"  height="8" fill="#c8f060"/>
+  <rect x="12" y="12" width="8"  height="8" fill="#c8f060"/>
+  <rect x="28" y="12" width="4"  height="8" fill="#c8f060"/>
+  <!-- Eyes (dark) -->
+  <rect x="4"  y="12" width="8"  height="8" fill="#111118"/>
+  <rect x="20" y="12" width="8"  height="8" fill="#111118"/>
+  <!-- Body -->
+  <rect x="0"  y="20" width="32" height="4" fill="#c8f060"/>
+  <!-- Legs -->
+  <rect x="4"  y="24" width="8"  height="8" fill="#c8f060"/>
+  <rect x="20" y="24" width="8"  height="8" fill="#c8f060"/>
+</svg>

@@ -11,7 +11,10 @@
       "Bash(git checkout:*)",
       "Bash(gh pr create:*)",
       "Bash(git:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:www.starkinsider.com)"
     ],
     "deny": [],
     "ask": []
