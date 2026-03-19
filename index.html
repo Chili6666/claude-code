@@ -1542,6 +1542,14 @@ globs: ["src/api/**/*.ts"]
           Enforces import ordering, type safety, and consistent code quality in TypeScript projects.
         </td>
       </tr>
+      <tr>
+        <td class="cmd-name">react</td>
+        <td><span class="tag">*.tsx · *.ts</span></td>
+        <td data-de="Verhindert useEffect-Missbrauch und erzwingt sichere React-Patterns wie abgeleiteten State und Event-Handler."
+            data-en="Prevents useEffect misuse and enforces safe React patterns like derived state and event handlers.">
+          Prevents useEffect misuse and enforces safe React patterns like derived state and event handlers.
+        </td>
+      </tr>
     </tbody>
   </table>
   </div>
@@ -1559,6 +1567,15 @@ globs: ["src/api/**/*.ts"]
     <div class="cmd-install-row">
       <code>npx github:Chili6666/claude-code rules add <span>typescript</span></code>
       <button class="cmd-copy-btn" onclick="copyCmd(this, 'npx github:Chili6666/claude-code rules add typescript')" aria-label="Copy">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="5" width="9" height="9" rx="1.5"/>
+          <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cmd-install-row">
+      <code>npx github:Chili6666/claude-code rules add <span>react</span></code>
+      <button class="cmd-copy-btn" onclick="copyCmd(this, 'npx github:Chili6666/claude-code rules add react')" aria-label="Copy">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <rect x="5" y="5" width="9" height="9" rx="1.5"/>
           <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
@@ -1597,7 +1614,7 @@ globs: ["src/api/**/*.ts"]
       <tr>
         <td class="cmd-name">typescript</td>
         <td>
-          <span class="tag" style="display:block;margin-bottom:0.25rem;">rules: typescript, security</span>
+          <span class="tag" style="display:block;margin-bottom:0.25rem;">rules: typescript, security, react</span>
           <span class="tag">commands: commit, organize-imports, check-memoization</span>
         </td>
         <td data-de="TypeScript-Entwicklung: Typ-Sicherheits-Rules und Qualitäts-Commands in einem Schritt."
