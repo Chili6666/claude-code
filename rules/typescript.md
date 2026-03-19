@@ -213,7 +213,25 @@ return this.build(tokens);
 
 ---
 
-## Rule 6: File Naming Matches Export (CRITICAL)
+## Rule 6: No "I" Prefix on Interfaces (CRITICAL)
+
+**Action: Auto-fix** — Remove the `I` prefix automatically.
+
+Never prefix interface names with `I`. Use the plain name directly.
+
+```ts
+// ✅ Correct
+export interface Service { ... }
+export interface UserRepository { ... }
+
+// ❌ Incorrect
+export interface IService { ... }
+export interface IUserRepository { ... }
+```
+
+---
+
+## Rule 7: File Naming Matches Export (CRITICAL)
 
 **Action: Flag** — Report mismatched filename and exported name.
 
@@ -231,7 +249,7 @@ FileUtils.ts    →  export const readFile = ...
 
 ---
 
-## Rule 7: One Exported Entity Per File (CRITICAL)
+## Rule 8: One Exported Entity Per File (CRITICAL)
 
 **Action: Flag** — Report when multiple exported entities exist in a single file.
 
@@ -250,7 +268,7 @@ export class UserService { ... }
 
 ---
 
-## Rule 8: No Mixed Exports (CRITICAL)
+## Rule 9: No Mixed Exports (CRITICAL)
 
 **Action: Flag** — Report files that mix exported interfaces with exported classes or exported functions.
 
@@ -268,7 +286,7 @@ export const promptSelect = (options: SelectOption[]): Promise<string> => { ... 
 
 ---
 
-## Rule 9: Explicit Access Modifiers (HIGH)
+## Rule 10: Explicit Access Modifiers (HIGH)
 
 **Action: Auto-fix** — Add missing access modifiers automatically.
 
@@ -292,7 +310,7 @@ findUser(id: string): User | undefined {
 
 ---
 
-## Rule 10: Class Member Order (HIGH)
+## Rule 11: Class Member Order (HIGH)
 
 **Action: Flag** — Report out-of-order members with the expected order.
 
@@ -323,7 +341,7 @@ class UserService {
 
 ---
 
-## Rule 11: JSDoc for Public Functions and Methods (HIGH)
+## Rule 12: JSDoc for Public Functions and Methods (HIGH)
 
 **Action: Auto-fix** — Add missing JSDoc blocks automatically.
 
@@ -348,7 +366,7 @@ public findUser = (id: string): User | undefined => {
 
 ---
 
-## Rule 12: Type Safety — No `any`, Explicit Return Types (MEDIUM)
+## Rule 13: Type Safety — No `any`, Explicit Return Types (MEDIUM)
 
 **Action: Flag** — Report `any` usage and missing return types on public functions.
 
@@ -373,7 +391,7 @@ const getUsers = (filter: string) => {
 
 ---
 
-## Rule 13: `_` Prefix for Intentionally Unused Parameters (MEDIUM)
+## Rule 14: `_` Prefix for Intentionally Unused Parameters (MEDIUM)
 
 **Action: Flag** — Report `_`-prefixed variables that are actually extracting values that should be passed through.
 
@@ -393,7 +411,7 @@ private build = (_tokens: Record<string, unknown>): string => {
 
 ---
 
-## Rule 14: Dependency Injection (MEDIUM)
+## Rule 15: Dependency Injection (MEDIUM)
 
 **Action: Flag** — Report `new` instantiation of dependencies inside class bodies.
 
@@ -413,7 +431,7 @@ private logger = new Logger();
 
 ---
 
-## Rule 15: Type-Safe Custom Error Classes (MEDIUM)
+## Rule 16: Type-Safe Custom Error Classes (MEDIUM)
 
 **Action: Flag** — Report `throw new Error(...)` where a typed custom error class should be used.
 
@@ -435,7 +453,7 @@ throw new Error('Invalid email format');
 
 ---
 
-## Rule 16: File Organization — Public API First (MEDIUM)
+## Rule 17: File Organization — Public API First (MEDIUM)
 
 **Action: Auto-fix** — Reorder file contents to put exported functions before private helpers.
 
@@ -464,7 +482,7 @@ export const findUser = (id: string): User | undefined => { ... };
 
 ---
 
-## Rule 17: Interface Organization (MEDIUM)
+## Rule 18: Interface Organization (MEDIUM)
 
 **Action: Flag** — Report single-use interfaces that are exported, or shared interfaces that live inline in non-interface files.
 
@@ -486,7 +504,7 @@ export interface CreateUserData { name: string; email: string; }
 
 ---
 
-## Rule 18: No Magic Numbers or Strings (LOW)
+## Rule 19: No Magic Numbers or Strings (LOW)
 
 **Action: Flag** — Report inline numeric or string literals that carry semantic meaning.
 
@@ -509,7 +527,7 @@ for (let i = 0; i < 3; i++) {
 
 ---
 
-## Rule 19: Performance Anti-Patterns (LOW)
+## Rule 20: Performance Anti-Patterns (LOW)
 
 **Action: Flag** — Report chained array operations that can be collapsed and object/array lookups inside tight loops.
 
